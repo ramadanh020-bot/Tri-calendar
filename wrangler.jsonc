@@ -1,7 +1,10 @@
 {
   "name": "tri-calendar",
   "compatibility_date": "2026-10-04",
+  "workers_dev": false,
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "single-page-application"
   }
 }
