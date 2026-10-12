@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelance Rate Calculator 2026 | Calculate Your Hourly Rate</title>
+  <meta name="description" content="Calculate the hourly rate you need to charge as a freelancer. Accounts for taxes, expenses, billable hours, and time off. Free, instant, no signup.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a202c;
+      line-height: 1.6;
+    }
+    .container { max-width: 640px; margin: 0 auto; padding: 20px; }
+    h1 { font-size: 1.75rem; margin-bottom: 8px; }
+    .subtitle { color: #64748b; margin-bottom: 24px; font-size: 0.95rem; }
+    .card {
+      background: #fff; border-radius: 12px; padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+    .hint { font-weight: 400; color: #94a3b8; font-size: 0.8rem; }
+    input[type="number"] {
+      width: 100%; padding: 12px; font-size: 1.1rem;
+      border: 2px solid #e2e8f0; border-radius: 8px; outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="number"]:focus { border-color: #3182ce; }
+    .field-group { margin-bottom: 16px; }
+    .results { margin-top: 20px; }
+    .result-row {
+      display: flex; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row.total {
+      font-weight: 700; font-size: 1.25rem; color: #2f855a;
+      border-top: 2px solid #e2e8f0; margin-top: 8px; padding-top: 16px;
+    }
+    .result-label { color: #4a5568; }
+    .result-value { font-weight: 600; }
+    .result-value.deduction { color: #c53030; }
+    .content {
+      background: #fff; border-radius: 12px; padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .content h2 { font-size: 1.25rem; margin: 24px 0 12px; }
+    .content h2:first-child { margin-top: 0; }
+    .content p, .content li { color: #4a5568; font-size: 0.95rem; margin-bottom: 12px; }
+    .content ul { padding-left: 20px; }
+    footer {
+      text-align: center; padding: 32px 20px;
+      color: #94a3b8; font-size: 0.85rem;
+    }
+    footer a { color: #64748b; text-decoration: none; margin: 0 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Freelance Rate Calculator</h1>
+    <p class="subtitle">Calculate the hourly rate you need to charge to hit your income goal</p>
+
+    <div class="card">
+      <div class="field-group">
+        <label for="income">Target Annual Take-Home Income ($)</label>
+        <input type="number" id="income" placeholder="e.g. 80000" min="0" step="1000">
+      </div>
+
+      <div class="field-group">
+        <label for="expenses">Annual Business Expenses ($) <span class="hint">software, insurance, equipment</span></label>
+        <input type="number" id="expenses" placeholder="e.g. 12000" min="0" step="500">
+      </div>
+
+      <div class="field-group">
+        <label for="hours">Hours Worked Per Week</label>
+        <input type="number" id="hours" placeholder="e.g. 40" min="1" max="80" step="1">
+      </div>
+
+      <div class="field-group">
+        <label for="weeks">Weeks Worked Per Year <span class="hint">subtract vacation and holidays</span></label>
+        <input type="number" id="weeks" placeholder="e.g. 48" min="1" max="52" step="1">
+      </div>
+
+      <div class="field-group">
+        <label for="billable">Billable Time Ratio (%) <span class="hint">typically 40%</span></label>
+        <input type="number" id="billable" placeholder="40" min="10" max="100" step="5">
+      </div>
+
+      <div class="results" id="results" style="display:none;">
+        <div class="result-row">
+          <span class="result-label">Billable Hours Per Year</span>
+          <span class="result-value" id="r-billable-hours">0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Self-Employment Tax (15.3%)</span>
+          <span class="result-value deduction" id="r-setax">$0</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Required Gross Revenue</span>
+          <span class="result-value" id="r-revenue">$0</span>
+        </div>
+        <div class="result-row total">
+          <span class="result-label">Minimum Hourly Rate</span>
+          <span class="result-value" id="r-minrate">$0</span>
+        </div>
+        <div class="result-row total">
+          <span class="result-label">Recommended Rate (with 20% buffer)</span>
+          <span class="result-value" id="r-recrate">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <h2>How This Calculator Works</h2>
+      <p>This tool calculates the hourly rate you need to charge as a freelancer, accounting for taxes, business expenses, non-billable time, and time off. It does not simply divide your income goal by 2,000 hours — that method is dangerously inaccurate.</p>
+
+      <h2>The Formula</h2>
+      <p><strong>Step 1:</strong> Billable Hours = Hours per Week × Weeks per Year × Billable Ratio</p>
+      <p><strong>Step 2:</strong> Required Revenue = Target Income + Expenses + Self-Employment Tax</p>
+      <p><strong>Step 3:</strong> Minimum Rate = Required Revenue ÷ Billable Hours</p>
+      <p><strong>Step 4:</strong> Recommended Rate = Minimum Rate × 1.20</p>
+
+      <h2>Why Billable Hours Matter</h2>
+      <p>Most freelancers work far more hours than they can bill. Research shows that only about <strong>40% of a freelancer's total working hours are billable</strong>. The rest is spent on sales, admin, email, and unpaid work. If you ignore this, you will systematically undercharge.</p>
+
+      <h2>Self-Employment Tax</h2>
+      <p>US-based freelancers pay a <strong>15.3% self-employment tax</strong> (12.4% Social Security + 2.9% Medicare) on 92.35% of net earnings. The Social Security portion is capped at the first <strong>$184,500</strong> of earnings for 2026. This calculator includes an estimate of your SE tax in the required revenue.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <p><strong>What is a realistic billable ratio?</strong> For most freelancers, 40–60% is realistic. If you spend a lot of time on sales or admin, use a lower number.</p>
+      <p><strong>Does this include state taxes?</strong> No. This calculator provides a federal-level estimate. State taxes vary significantly and should be factored in separately.</p>
+      <p><strong>Can I use this for consulting?</strong> Yes. The formula works for any independent professional who bills by the hour.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Freelance Rate Calculator</p>
+    <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
+  </footer>
+
+  <script>
+    const inputs = ['income', 'expenses', 'hours', 'weeks', 'billable'];
+
+    function calculate() {
+      const income = parseFloat(document.getElementById('income').value) || 0;
+      const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+      const hoursPerWeek = parseFloat(document.getElementById('hours').value) || 0;
+      const weeksPerYear = parseFloat(document.getElementById('weeks').value) || 0;
+      const billableRatio = (parseFloat(document.getElementById('billable').value) || 0) / 100;
+
+      if (income <= 0 || hoursPerWeek <= 0 || weeksPerYear <= 0 || billableRatio <= 0) {
+        document.getElementById('results').style.display = 'none';
+        return;
+      }
+
+      const billableHours = hoursPerWeek * weeksPerYear * billableRatio;
+
+      // Self-employment tax: 15.3% on 92.35% of net earnings
+      // Net earnings = income + expenses (simplified; SE tax base is net profit)
+      const netEarnings = income + expenses;
+      const seTaxBase = netEarnings * 0.9235;
+      let seTax = seTaxBase * 0.153;
+
+      // Apply Social Security cap ($184,500 for 2026)
+      const ssWageBase = 184500;
+      if (seTaxBase > ssWageBase) {
+        const ssPortion = ssWageBase * 0.124;
+        const medicarePortion = seTaxBase * 0.029;
+        seTax = ssPortion + medicarePortion;
+      }
+
+      const requiredRevenue = income + expenses + seTax;
+      const minimumRate = requiredRevenue / billableHours;
+      const recommendedRate = minimumRate * 1.20;
+
+      document.getElementById('r-billable-hours').textContent = Math.round(billableHours).toLocaleString();
+      document.getElementById('r-setax').textContent = '$' + seTax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      document.getElementById('r-revenue').textContent = '$' + requiredRevenue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      document.getElementById('r-minrate').textContent = '$' + minimumRate.toFixed(2) + '/hr';
+      document.getElementById('r-recrate').textContent = '$' + recommendedRate.toFixed(2) + '/hr';
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', calculate);
+    });
+  </script>
+</body>
+</html>
