@@ -3,9 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tri-Calendar | Ethiopian, Hijri & Gregorian Converter</title>
+<title>Ethiopian Calendar Converter | Gregorian ↔ Ethiopian & Hijri Date</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
-<meta name="description" content="Convert between Ethiopian, Hijri, and Gregorian calendars. Day counter, Ethiopian hour calculator, world clock, and printable tri-calendar.">
+<meta name="description" content="Free Ethiopian calendar converter. Convert Gregorian to Ethiopian and Ethiopian to Gregorian dates instantly, plus Hijri dates, today's date, and printable calendars.">
+<meta name="keywords" content="ethiopian calendar converter, gregorian to ethiopian, ethiopian to gregorian, amharic calendar, ethiopian date converter, hijri calendar converter, ethiopian calendar today">
+<meta name="author" content="Ethio Calendar">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ethio-calendar.com/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Ethiopian Calendar Converter | Gregorian ↔ Ethiopian & Hijri Date">
+<meta property="og:description" content="Convert Gregorian to Ethiopian and Ethiopian to Gregorian dates instantly. Free tri-calendar tool with Hijri support.">
+<meta property="og:url" content="https://ethio-calendar.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="am_ET">
+<meta property="og:locale:alternate" content="ar_AR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ethiopian Calendar Converter | Gregorian ↔ Ethiopian & Hijri Date">
+<meta name="twitter:description" content="Free Ethiopian calendar converter. Convert dates instantly between Ethiopian, Gregorian, and Hijri calendars.">
+
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -73,6 +92,8 @@
   footer { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 0.85rem; }
   footer a { color: #64748b; text-decoration: none; margin: 0 8px; }
   footer a:hover { color: #3182ce; }
+  .seo-paragraph { color: #64748b; font-size: 0.85rem; text-align: center; margin: 24px auto; max-width: 720px; line-height: 1.7; }
+  .seo-paragraph strong { color: #2d3748; }
 
   @media print {
     body { background: #fff !important; }
@@ -117,8 +138,8 @@
 </head>
 <body>
 <div class="container">
-  <h1>Tri-Calendar Tool</h1>
-  <p class="subtitle">Ethiopian · Hijri · Gregorian — Convert, Count, Calculate & Print</p>
+  <h1>Ethiopian Calendar Converter</h1>
+  <p class="subtitle">Convert between Ethiopian, Gregorian & Hijri calendars — free, instant, printable</p>
 
   <div class="tabs no-print">
     <button class="tab active" data-tab="calendar">📅 Calendar</button>
@@ -282,10 +303,14 @@
       <div class="world-grid" id="world-grid"></div>
     </div>
   </div>
+
+  <p class="seo-paragraph">
+    Also known as the <strong>Amharic calendar</strong> or <strong>Habesha calendar</strong>, the Ethiopian calendar has 13 months and runs 7–8 years behind the Gregorian calendar. Use this free <strong>Ethiopian calendar converter</strong> to convert Ethiopian dates to Gregorian, Gregorian to Ethiopian, and view Hijri dates side by side. Perfect for checking today's <strong>Ethiopian date</strong>, planning holidays, or printing a tri-calendar.
+  </p>
 </div>
 
 <footer>
-  <p>© <span id="year"></span> Tri-Calendar Tool</p>
+  <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
   <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
 </footer>
 
@@ -463,7 +488,6 @@ function jdnToHijri(jdn) {
     }
     day = diff + 1;
   } else {
-    // Walk backward
     while (diff < 0) {
       month--;
       if (month < 1) {
