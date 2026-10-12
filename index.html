@@ -95,28 +95,125 @@
   .seo-paragraph { color: #64748b; font-size: 0.85rem; text-align: center; margin: 24px auto; max-width: 720px; line-height: 1.7; }
   .seo-paragraph strong { color: #2d3748; }
 
+  /* ============================================================
+     SINGLE-MONTH PRINT VIEW — modern, ink-friendly
+     ============================================================ */
   @media print {
-    body { background: #fff !important; }
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: #fff !important; font-size: 11pt; }
     body * { visibility: hidden; }
     #print-area, #print-area * { visibility: visible; }
-    #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 10px; }
+    #print-area {
+      position: absolute; left: 0; top: 0; width: 100%;
+      padding: 0; color: #111;
+    }
     .no-print { display: none !important; }
-    .month-title-block { margin-bottom: 16px; }
-    .month-title-main { font-size: 1.6rem !important; color: #000 !important; }
-    .month-title-sub { font-size: 0.85rem !important; color: #333 !important; }
-    .month-grid { gap: 3px !important; }
-    .month-grid .day-head { font-size: 0.75rem !important; color: #000 !important; font-weight: 900 !important; border-bottom: 2px solid #000; }
-    .month-grid .day-cell { border: 1.5px solid #000 !important; background: #fff !important; padding: 3px !important; }
-    .month-grid .day-cell.today { background: #d0d0d0 !important; border: 3px solid #000 !important; }
-    .month-grid .day-cell.holiday { background: #f0f0f0 !important; border: 2.5px solid #000 !important; }
-    .month-grid .day-cell .date-row.priority-row { font-size: 1.3rem !important; font-weight: 900 !important; color: #000 !important; }
-    .month-grid .day-cell .date-row.priority-row .prefix { color: #000 !important; font-size: 0.65rem !important; }
-    .month-grid .day-cell .date-row:not(.priority-row) { font-size: 0.7rem !important; color: #555 !important; }
-    .month-grid .day-cell .date-row:not(.priority-row) .prefix { color: #777 !important; font-size: 0.55rem !important; }
-    .holiday-section { border-top: 2px solid #000 !important; padding-top: 12px !important; margin-top: 16px !important; }
-    .holiday-section h3 { font-size: 0.9rem !important; color: #000 !important; }
-    .holiday-list { font-size: 0.75rem !important; color: #333 !important; }
-    .holiday-list li { margin-bottom: 3px !important; }
+
+    /* Header band */
+    #print-area .print-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      border-bottom: 3px solid #111;
+      padding-bottom: 8px; margin-bottom: 14px;
+    }
+    #print-area .print-brand {
+      font-size: 9pt; letter-spacing: 0.18em; text-transform: uppercase;
+      color: #555; font-weight: 700;
+    }
+    #print-area .print-url {
+      font-size: 8pt; color: #888;
+    }
+
+    /* Month title */
+    .month-title-block { text-align: center; margin-bottom: 14px; }
+    .month-title-main {
+      font-size: 22pt !important; font-weight: 800 !important;
+      color: #111 !important; letter-spacing: -0.5px;
+    }
+    .month-title-sub {
+      font-size: 10pt !important; color: #444 !important;
+      margin-top: 4px; line-height: 1.5;
+    }
+
+    /* Grid */
+    .month-grid {
+      gap: 4px !important;
+      border: none;
+      display: grid; grid-template-columns: repeat(7, 1fr);
+    }
+    .month-grid .day-head {
+      font-size: 9pt !important; font-weight: 800 !important;
+      color: #333 !important; padding: 6px 0 !important;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      border-bottom: 2px solid #333;
+      background: transparent !important;
+    }
+    .month-grid .day-cell {
+      border: 1px solid #999 !important;
+      background: #fff !important;
+      padding: 4px 3px !important;
+      aspect-ratio: 1 / 0.92 !important;
+    }
+    .month-grid .day-cell.today {
+      background: #eaf3fb !important;
+      border: 2.5px solid #2c5282 !important;
+    }
+    .month-grid .day-cell.holiday {
+      background: #fdf0ee !important;
+      border: 2px solid #c53030 !important;
+    }
+    .month-grid .day-cell.today.holiday {
+      background: #fce9e6 !important;
+      border: 2.5px solid #2c5282 !important;
+    }
+    .month-grid .day-cell .date-row {
+      font-size: 8pt !important; color: #555 !important;
+      gap: 4px !important;
+    }
+    .month-grid .day-cell .date-row .prefix {
+      color: #999 !important; font-size: 6pt !important;
+      font-weight: 800 !important;
+    }
+    .month-grid .day-cell .date-row.priority-row {
+      font-size: 14pt !important; font-weight: 900 !important;
+      color: #111 !important;
+    }
+    .month-grid .day-cell .date-row.priority-row .prefix {
+      color: #333 !important; font-size: 7pt !important;
+    }
+
+    /* Holiday section */
+    .holiday-section {
+      margin-top: 20px !important;
+      padding-top: 12px !important;
+      border-top: 2px solid #333 !important;
+    }
+    .holiday-section h3 { display: none !important; }
+
+    .holiday-list { font-size: 10pt !important; }
+    .holiday-list li {
+      padding: 6px 0 !important;
+      border-bottom: 1px dotted #bbb !important;
+      color: #222 !important;
+      display: flex; justify-content: space-between;
+    }
+    .holiday-list .holiday-date {
+      font-weight: 800 !important;
+      color: #111 !important;
+      min-width: 110px;
+    }
+    .holiday-list .holiday-name {
+      flex: 1; color: #222; padding-left: 8px;
+    }
+    .holiday-list .holiday-type { font-size: 11pt; }
+
+    /* Print footer */
+    #print-area .print-footer {
+      margin-top: 16px;
+      padding-top: 8px;
+      border-top: 1px solid #ccc;
+      font-size: 8pt; color: #888; text-align: center;
+      font-style: italic;
+    }
   }
 
   @media (max-width: 600px) {
@@ -127,7 +224,6 @@
   }
 
   .holiday-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
-  .holiday-section h3 { font-size: 0.9rem; font-weight: 700; color: #2d3748; margin-bottom: 8px; }
   .holiday-list { list-style: none; padding: 0; }
   .holiday-list li { font-size: 0.8rem; color: #4a5568; padding: 4px 0; border-bottom: 1px dashed #edf2f7; display: flex; justify-content: space-between; align-items: center; }
   .holiday-list li:last-child { border-bottom: none; }
@@ -232,6 +328,11 @@
       </div>
 
       <div id="print-area">
+        <div class="print-header">
+          <div class="print-brand">Ethio Calendar</div>
+          <div class="print-url">ethio-calendar.com</div>
+        </div>
+
         <div class="tri-display" id="month-grids" style="grid-template-columns: 1fr; max-width: 640px; margin: 0 auto;">
           <div class="cal-col" id="month-ethiopian">
             <div class="month-title-block">
@@ -243,8 +344,11 @@
         </div>
 
         <div class="holiday-section" id="holiday-section">
-          <h3>Holidays This Month</h3>
           <ul class="holiday-list" id="holiday-list"></ul>
+        </div>
+
+        <div class="print-footer">
+          Printed from ethio-calendar.com — Free Ethiopian, Hijri & Gregorian calendar converter
         </div>
       </div>
 
@@ -253,7 +357,7 @@
         <button class="secondary" onclick="printWholeYear()">📅 Download Whole Year</button>
       </div>
 
-      <div class="warning">⚠️ Hijri dates are estimates based on the Umm al-Qura calendar. Local moon sighting may differ by ±1 day. Consult Scholars for religious observances.</div>
+      <div class="warning">⚠️ Hijri dates are estimates based on the Umm al-Qura calendar. Local moon sighting may differ by ±1 day. Consult scholars for religious observances.</div>
     </div>
   </div>
 
@@ -421,7 +525,7 @@ function jdnToEthiopian(jdn) {
 }
 
 // ============================================================
-// HIJRI — ANCHOR-BASED CONVERSION (matches Umm al-Qura)
+// HIJRI — ANCHOR-BASED CONVERSION
 // Anchor: 1 Muharram 1447 AH = 26 June 2025 CE
 // ============================================================
 const HIJRI_ANCHOR_YEAR = 1447;
@@ -533,7 +637,7 @@ function computeOrthodoxEaster(gregYear) {
 }
 
 // ============================================================
-// HOLIDAY LOOKUP
+// HOLIDAY LOOKUP — Both Ethiopian AND Hijri holidays merged
 // ============================================================
 function getHolidaysForMonth(calendarType, year, month) {
   const holidays = [];
@@ -551,37 +655,27 @@ function getHolidaysForMonth(calendarType, year, month) {
   }
   const endJdn = startJdn + daysInMonth - 1;
 
-  ethiopianHolidays.forEach(h => {
-    const hJdn = ethiopianToJDN(year, h.ethMonth, h.ethDay);
-    if (calendarType === 'ethiopian') {
-      if (h.ethMonth === month && hJdn >= startJdn && hJdn <= endJdn) {
-        holidays.push({ name: h.name, nameAm: h.nameAm, date: hJdn, type: 'ethiopian' });
-      }
-    } else {
+  // Ethiopian (Orthodox)
+  const ethYearsInRange = new Set();
+  for (let j = startJdn; j <= endJdn; j++) {
+    ethYearsInRange.add(jdnToEthiopian(j).year);
+  }
+  ethYearsInRange.forEach(ethYear => {
+    ethiopianHolidays.forEach(h => {
+      const hJdn = ethiopianToJDN(ethYear, h.ethMonth, h.ethDay);
       if (hJdn >= startJdn && hJdn <= endJdn) {
         holidays.push({ name: h.name, nameAm: h.nameAm, date: hJdn, type: 'ethiopian' });
-      }
-    }
-  });
-
-  const hijriYearsToCheck = [year - 1, year, year + 1];
-  hijriYearsToCheck.forEach(hy => {
-    hijriHolidays.forEach(h => {
-      const hJdn = hijriToJDN(hy, h.hijriMonth, h.hijriDay);
-      if (calendarType === 'hijri') {
-        if (hy === year && h.hijriMonth === month && hJdn >= startJdn && hJdn <= endJdn) {
-          holidays.push({ name: h.name, nameAr: h.nameAr, date: hJdn, type: 'hijri' });
-        }
-      } else {
-        if (hJdn >= startJdn && hJdn <= endJdn) {
-          holidays.push({ name: h.name, nameAr: h.nameAr, date: hJdn, type: 'hijri' });
-        }
       }
     });
   });
 
-  if (calendarType === 'gregorian' || calendarType === 'ethiopian') {
-    const easter = computeOrthodoxEaster(year);
+  // Orthodox Easter + Good Friday
+  const gregYearsInRange = new Set();
+  for (let j = startJdn; j <= endJdn; j++) {
+    gregYearsInRange.add(jdnToGregorian(j).year);
+  }
+  gregYearsInRange.forEach(gy => {
+    const easter = computeOrthodoxEaster(gy);
     const easterJdn = gregorianToJDN(easter.year, easter.month, easter.day);
     const goodFridayJdn = easterJdn - 2;
     if (easterJdn >= startJdn && easterJdn <= endJdn) {
@@ -590,7 +684,21 @@ function getHolidaysForMonth(calendarType, year, month) {
     if (goodFridayJdn >= startJdn && goodFridayJdn <= endJdn) {
       holidays.push({ name: 'Siklet (Good Friday)', nameAm: 'ስቅለት', date: goodFridayJdn, type: 'ethiopian' });
     }
+  });
+
+  // Hijri (Islamic)
+  const hijriYearsInRange = new Set();
+  for (let j = startJdn; j <= endJdn; j++) {
+    hijriYearsInRange.add(jdnToHijri(j).year);
   }
+  hijriYearsInRange.forEach(hy => {
+    hijriHolidays.forEach(h => {
+      const hJdn = hijriToJDN(hy, h.hijriMonth, h.hijriDay);
+      if (hJdn >= startJdn && hJdn <= endJdn) {
+        holidays.push({ name: h.name, nameAr: h.nameAr, date: hJdn, type: 'hijri' });
+      }
+    });
+  });
 
   const seen = new Set();
   const unique = holidays.filter(h => {
@@ -1139,7 +1247,7 @@ function renderWorldClock() {
 }
 
 // ============================================================
-// DOWNLOAD WHOLE YEAR
+// DOWNLOAD WHOLE YEAR — redesigned print-friendly layout
 // ============================================================
 function printWholeYear() {
   const yearSel = document.getElementById('print-year');
@@ -1203,20 +1311,20 @@ function printWholeYear() {
         let name = h.name;
         if (uiLang === 'am' && h.nameAm) name = h.nameAm;
         else if (uiLang === 'ar' && h.nameAr) name = h.nameAr;
-        return `<li><span class="h-date">${dateStr}</span> ${name} <span class="h-type">${h.type === 'ethiopian' ? '🇪🇹' : '☪️'}</span></li>`;
+        return `<li><span class="h-date">${dateStr}</span><span class="h-name">${name}</span><span class="h-type">${h.type === 'ethiopian' ? '🇪🇹' : '☪️'}</span></li>`;
       }).join('');
-      holidayHtml = `<div class="page-holidays"><h4>Holidays</h4><ul>${items}</ul></div>`;
-    } else {
-      holidayHtml = `<div class="page-holidays"><h4>Holidays</h4><p style="color:#999; font-size:0.75rem;">None this month</p></div>`;
+      holidayHtml = `<div class="page-holidays"><ul>${items}</ul></div>`;
     }
 
     html += `<div class="year-page">`;
+    html += `<div class="print-header"><div class="print-brand">Ethio Calendar</div><div class="print-url">ethio-calendar.com</div></div>`;
     html += `<div class="year-title-block">`;
     html += `<div class="year-title">${titleText}</div>`;
     html += `<div class="year-subtitle">${subParts.join('')}</div>`;
     html += `</div>`;
     html += `<div class="month-grid" id="year-grid-${m}"></div>`;
     html += holidayHtml;
+    html += `<div class="print-footer">Ethio Calendar — Ethiopian, Hijri & Gregorian converter · ethio-calendar.com</div>`;
     html += `</div>`;
   }
 
@@ -1224,60 +1332,118 @@ function printWholeYear() {
   w.document.write(`<!DOCTYPE html><html><head><title>Tri-Calendar ${year} — ${priorityLabel}</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+      @page { size: A4 portrait; margin: 12mm; }
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #000; padding: 20px; }
-      .year-page { page-break-after: always; margin-bottom: 30px; text-align: center; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #111; padding: 0; font-size: 11pt; }
+      .year-page {
+        page-break-after: always;
+        padding: 0; margin: 0 auto;
+        max-width: 100%;
+        display: flex; flex-direction: column;
+      }
       .year-page:last-child { page-break-after: auto; }
-      .year-title-block { text-align: center; margin-bottom: 16px; }
-      .year-title { font-size: 1.5rem; font-weight: 800; color: #000; margin-bottom: 6px; }
-      .year-subtitle { font-size: 0.8rem; color: #333; line-height: 1.5; }
+
+      /* Header band */
+      .print-header {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        border-bottom: 3px solid #111;
+        padding-bottom: 8px; margin-bottom: 14px;
+      }
+      .print-brand {
+        font-size: 9pt; letter-spacing: 0.18em; text-transform: uppercase;
+        color: #555; font-weight: 700;
+      }
+      .print-url { font-size: 8pt; color: #888; }
+
+      /* Title */
+      .year-title-block { text-align: center; margin-bottom: 14px; }
+      .year-title {
+        font-size: 22pt; font-weight: 800;
+        color: #111; letter-spacing: -0.5px;
+      }
+      .year-subtitle {
+        font-size: 10pt; color: #444;
+        margin-top: 4px; line-height: 1.5;
+      }
       .year-subtitle [dir="rtl"] { direction: rtl; font-family: 'Amiri', serif; }
+
+      /* Grid */
       .month-grid {
         display: grid; grid-template-columns: repeat(7, 1fr);
-        gap: 3px; max-width: 700px; margin: 0 auto;
+        gap: 4px;
       }
       .day-head {
-        text-align: center; font-size: 0.75rem; font-weight: 900;
-        color: #000; padding: 6px 0; border-bottom: 2px solid #000;
+        text-align: center; font-size: 9pt; font-weight: 800;
+        color: #333; padding: 6px 0; text-transform: uppercase;
+        letter-spacing: 0.05em; border-bottom: 2px solid #333;
       }
       .day-cell {
-        aspect-ratio: 1; display: flex; flex-direction: column;
+        aspect-ratio: 1 / 0.92;
+        display: flex; flex-direction: column;
         align-items: center; justify-content: center;
-        border: 1.5px solid #000; padding: 3px;
+        border: 1px solid #999; padding: 4px 3px;
         line-height: 1.15; gap: 2px; background: #fff;
       }
-      .day-cell.today { background: #e0e0e0; border: 3px solid #000; }
-      .day-cell.holiday { background: #f0f0f0; border: 2.5px solid #000; }
+      .day-cell.today { background: #eaf3fb; border: 2.5px solid #2c5282; }
+      .day-cell.holiday { background: #fdf0ee; border: 2px solid #c53030; }
+      .day-cell.today.holiday { background: #fce9e6; border: 2.5px solid #2c5282; }
       .date-row {
         display: flex; align-items: baseline;
-        gap: 4px; font-size: 0.7rem; color: #666;
+        gap: 4px; font-size: 8pt; color: #555;
       }
       .date-row .prefix {
-        font-size: 0.55rem; font-weight: 700;
+        font-size: 6pt; font-weight: 800;
         color: #999; min-width: 14px;
       }
       .date-row.priority-row {
-        font-size: 1.3rem; font-weight: 900;
-        color: #000; margin-bottom: 2px;
+        font-size: 14pt; font-weight: 900;
+        color: #111; margin-bottom: 2px;
       }
       .date-row.priority-row .prefix {
-        font-size: 0.65rem; color: #000;
+        font-size: 7pt; color: #333;
       }
+
+      /* Holiday section */
       .page-holidays {
-        max-width: 700px; margin: 16px auto 0; text-align: left;
-        border-top: 1px solid #000; padding-top: 10px;
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 2px solid #333;
       }
-      .page-holidays h4 { font-size: 0.85rem; font-weight: 800; color: #000; margin-bottom: 6px; }
       .page-holidays ul { list-style: none; padding: 0; }
-      .page-holidays li { font-size: 0.75rem; color: #333; padding: 3px 0; border-bottom: 1px dashed #ccc; }
+      .page-holidays li {
+        font-size: 10pt; color: #222;
+        padding: 6px 0;
+        border-bottom: 1px dotted #bbb;
+        display: flex; align-items: baseline;
+      }
       .page-holidays li:last-child { border-bottom: none; }
-      .page-holidays .h-date { font-weight: 700; color: #000; margin-right: 8px; }
-      .page-holidays .h-type { margin-left: 6px; }
+      .page-holidays .h-date {
+        font-weight: 800; color: #111;
+        min-width: 110px;
+      }
+      .page-holidays .h-name {
+        flex: 1; color: #222; padding-left: 8px;
+      }
+      .page-holidays .h-type { font-size: 11pt; }
+
+      /* Footer */
+      .print-footer {
+        margin-top: 16px; padding-top: 8px;
+        border-top: 1px solid #ccc;
+        font-size: 8pt; color: #888; text-align: center;
+        font-style: italic;
+      }
+
       .ethiopic-text { font-family: 'Noto Sans Ethiopic', sans-serif; }
       [dir="rtl"] { direction: rtl; font-family: 'Amiri', serif; }
+
       @media print {
         .year-page { page-break-after: always; }
-        body { padding: 10px; }
+        body { padding: 0; }
+        .day-cell { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .day-cell.today, .day-cell.holiday, .day-cell.today.holiday {
+          -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
       }
     </style></head><body>${html}</body></html>`);
   w.document.close();
@@ -1291,8 +1457,8 @@ function printWholeYear() {
 
       renderGridInWindow(w, `year-grid-${m}`, gridType, gridYear, gridMonth, todayJdn);
     }
-    setTimeout(() => w.print(), 500);
-  }, 600);
+    setTimeout(() => w.print(), 700);
+  }, 700);
 }
 
 function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
