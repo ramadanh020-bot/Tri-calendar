@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><title>Day Counter | Ethiopian & Gregorian</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
+  <div class="container" style="display:flex; justify-content:space-between; padding:0 20px;">
+    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none;">Ethio Calendar</a>
+    <nav style="display:flex; gap:15px; font-weight:600;"><a href="/">Converter</a><a href="/today.html">Today</a><a href="/printable-calendar.html">Printable</a></nav>
+  </div>
+</header>
+<div class="container">
+  <div class="card">
+    <h1>Day Counter</h1>
+    <p style="color:#64748b; font-size:0.9rem; margin-bottom:16px;">Count days between two dates across all three calendars.</p>
+    <div class="row">
+      <div class="field-group"><label>Start Date (Gregorian)</label><input type="date" id="start-date"></div>
+      <div class="field-group"><label>End Date (Gregorian)</label><input type="date" id="end-date"></div>
+    </div>
+    <button class="primary" onclick="countDays()">Count Days</button>
+    <div class="result-box" id="day-result" style="display:none;">
+      <div class="label">Difference</div>
+      <div class="value" id="day-diff">—</div>
+      <div class="cal-detail" id="day-detail" style="margin-top:8px; color:#64748b;"></div>
+    </div>
+  </div>
+</div>
+<footer><p>© <span id="year"></span> Ethio Calendar</p></footer>
+<script src="/app.js"></script>
+</body>
+</html>
