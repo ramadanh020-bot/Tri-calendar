@@ -1,0 +1,116 @@
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #1a202c; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.9rem; margin-bottom: 8px; }
+  h2 { font-size: 1.3rem; margin: 24px 0 12px; color: #2d3748; }
+  h3 { font-size: 1rem; margin-bottom: 8px; color: #4a5568; }
+  .subtitle { color: #64748b; margin-bottom: 24px; font-size: 0.95rem; }
+  .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+  .tabs { display: flex; gap: 4px; background: #edf2f7; border-radius: 10px; padding: 4px; margin-bottom: 20px; overflow-x: auto; }
+  .tab { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 0.9rem; font-weight: 600; color: #4a5568; cursor: pointer; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+  .tab.active { background: #fff; color: #3182ce; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+  input, select { width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; outline: none; font-family: inherit; background: #fff; }
+  input:focus, select:focus { border-color: #3182ce; }
+  .field-group { margin-bottom: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  button.primary { background: #3182ce; color: #fff; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+  button.primary:hover { background: #2c5282; }
+  button.secondary { background: #fff; color: #3182ce; border: 2px solid #3182ce; padding: 12px 24px; font-size: 0.95rem; font-weight: 600; border-radius: 8px; cursor: pointer; margin-right: 8px; margin-top: 8px; }
+  button.secondary:hover { background: #ebf8ff; }
+  .result-box { background: #f7fafc; border-left: 4px solid #3182ce; border-radius: 6px; padding: 16px; margin-top: 16px; }
+  .result-box .label { font-size: 0.85rem; color: #64748b; margin-bottom: 4px; }
+  .result-box .value { font-size: 1.4rem; font-weight: 700; color: #2c5282; }
+  .tri-display { display: grid; gap: 12px; margin-top: 20px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .cal-col { padding: 16px; border-radius: 10px; border: 2px solid #e2e8f0; background: #fff; }
+  .cal-col.priority { border-color: #3182ce; background: #ebf8ff; }
+  .cal-col .cal-label { font-size: 0.75rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .cal-col .cal-date { font-size: 1.3rem; font-weight: 700; color: #1a202c; }
+  .cal-col .cal-detail { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+  .cal-col.priority .cal-date { font-size: 1.6rem; color: #2c5282; }
+  .toggle-group { display: inline-flex; background: #edf2f7; border-radius: 8px; padding: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toggle-group button { border: none; background: transparent; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #4a5568; }
+  .toggle-group button.active { background: #fff; color: #3182ce; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 12px; }
+  .month-grid .day-head { text-align: center; font-size: 0.7rem; font-weight: 700; color: #4a5568; padding: 4px 0; text-transform: uppercase; }
+  .month-grid .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 6px; padding: 3px; background: #fff; border: 1.5px solid #4a5568; line-height: 1.15; gap: 2px; }
+  .month-grid .day-cell .date-row { display: flex; align-items: baseline; gap: 3px; font-size: 0.65rem; color: #718096; }
+  .month-grid .day-cell .date-row .prefix { font-size: 0.5rem; font-weight: 700; text-transform: uppercase; color: #a0aec0; min-width: 14px; }
+  .month-grid .day-cell .date-row.priority-row { font-size: 1.1rem; font-weight: 800; color: #1a202c; }
+  .month-grid .day-cell .date-row.priority-row .prefix { font-size: 0.6rem; color: #3182ce; }
+  .month-grid .day-cell.today { background: #bee3f8; border: 2px solid #2c5282; }
+  .month-grid .day-cell.today .date-row.priority-row { color: #1a365d; }
+  .month-grid .day-cell.holiday { background: #fed7d7; border: 2px solid #e53e3e; }
+  .month-title-block { text-align: center; margin-bottom: 12px; }
+  .month-title-main { font-size: 1.3rem; font-weight: 800; color: #1a202c; }
+  .month-title-sub { font-size: 0.75rem; color: #718096; margin-top: 3px; line-height: 1.5; }
+  .world-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 16px; }
+  .city-card { background: #f7fafc; border-radius: 8px; padding: 14px; border: 1px solid #e2e8f0; }
+  .city-card .city { font-weight: 600; font-size: 0.85rem; color: #1a202c; }
+  .city-card .time { font-size: 1.1rem; font-weight: 700; color: #2c5282; margin-top: 4px; }
+  .city-card .date { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+  .warning { background: #fffaf0; border-left: 4px solid #dd6b20; padding: 12px 16px; border-radius: 6px; font-size: 0.85rem; color: #7b341e; margin-top: 16px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 14px; background: #edf2f7; border-radius: 6px; font-size: 0.8rem; color: #4a5568; margin-top: 12px; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .legend b { color: #2d3748; }
+  .download-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .print-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .ethiopic-text { font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', sans-serif; }
+  [dir="rtl"] { direction: rtl; text-align: right; font-family: 'Amiri', 'Scheherazade New', serif; }
+  footer { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 0.85rem; }
+  footer a { color: #64748b; text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: #3182ce; }
+  .seo-paragraph { color: #64748b; font-size: 0.85rem; text-align: center; margin: 24px auto; max-width: 720px; line-height: 1.7; }
+  .seo-paragraph strong { color: #2d3748; }
+
+  /* Print Styles */
+  @media print {
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: #fff !important; font-size: 11pt; }
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 0; color: #111; }
+    .no-print { display: none !important; }
+    #print-area .print-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #111; padding-bottom: 8px; margin-bottom: 14px; }
+    #print-area .print-brand { font-size: 9pt; letter-spacing: 0.18em; text-transform: uppercase; color: #555; font-weight: 700; }
+    #print-area .print-url { font-size: 8pt; color: #888; }
+    .month-title-block { text-align: center; margin-bottom: 14px; }
+    .month-title-main { font-size: 22pt !important; font-weight: 800 !important; color: #111 !important; letter-spacing: -0.5px; }
+    .month-title-sub { font-size: 10pt !important; color: #444 !important; margin-top: 4px; line-height: 1.5; }
+    .month-grid { gap: 4px !important; border: none; display: grid; grid-template-columns: repeat(7, 1fr); }
+    .month-grid .day-head { font-size: 9pt !important; font-weight: 800 !important; color: #333 !important; padding: 6px 0 !important; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #333; background: transparent !important; }
+    .month-grid .day-cell { border: 1px solid #999 !important; background: #fff !important; padding: 4px 3px !important; aspect-ratio: 1 / 0.92 !important; }
+    .month-grid .day-cell.today { background: #eaf3fb !important; border: 2.5px solid #2c5282 !important; }
+    .month-grid .day-cell.holiday { background: #fdf0ee !important; border: 2px solid #c53030 !important; }
+    .month-grid .day-cell.today.holiday { background: #fce9e6 !important; border: 2.5px solid #2c5282 !important; }
+    .month-grid .day-cell .date-row { font-size: 8pt !important; color: #555 !important; gap: 4px !important; }
+    .month-grid .day-cell .date-row .prefix { color: #999 !important; font-size: 6pt !important; font-weight: 800 !important; }
+    .month-grid .day-cell .date-row.priority-row { font-size: 14pt !important; font-weight: 900 !important; color: #111 !important; }
+    .month-grid .day-cell .date-row.priority-row .prefix { color: #333 !important; font-size: 7pt !important; }
+    .holiday-section { margin-top: 20px !important; padding-top: 12px !important; border-top: 2px solid #333 !important; }
+    .holiday-section h3 { display: none !important; }
+    .holiday-list { font-size: 10pt !important; }
+    .holiday-list li { padding: 6px 0 !important; border-bottom: 1px dotted #bbb !important; color: #222 !important; display: flex; justify-content: space-between; }
+    .holiday-list .holiday-date { font-weight: 800 !important; color: #111 !important; min-width: 110px; }
+    .holiday-list .holiday-name { flex: 1; color: #222; padding-left: 8px; }
+    .holiday-list .holiday-type { font-size: 11pt; }
+    #print-area .print-footer { margin-top: 16px; padding-top: 8px; border-top: 1px solid #ccc; font-size: 8pt; color: #888; text-align: center; font-style: italic; }
+  }
+
+  @media (max-width: 600px) {
+    .tri-display { grid-template-columns: 1fr; }
+    .row-3 { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; }
+    .print-controls { grid-template-columns: 1fr; }
+  }
+
+  .holiday-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
+  .holiday-list { list-style: none; padding: 0; }
+  .holiday-list li { font-size: 0.8rem; color: #4a5568; padding: 4px 0; border-bottom: 1px dashed #edf2f7; display: flex; justify-content: space-between; align-items: center; }
+  .holiday-list li:last-child { border-bottom: none; }
+  .holiday-list .holiday-date { font-weight: 600; color: #2c5282; min-width: 90px; }
+  .holiday-list .holiday-name { flex: 1; }
+  .holiday-list .holiday-type { font-size: 0.9rem; }
