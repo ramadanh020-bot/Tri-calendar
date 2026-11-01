@@ -3,49 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact | Tri-Calendar Tool</title>
-<meta name="description" content="Contact the Tri-Calendar team.">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #1a202c; line-height: 1.7; }
-  .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
-  .card { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  h1 { font-size: 1.8rem; margin-bottom: 8px; }
-  h2 { font-size: 1.25rem; margin: 28px 0 12px; color: #2d3748; }
-  p { margin-bottom: 16px; color: #4a5568; }
-  a { color: #3182ce; }
-  .contact-box { background: #f7fafc; border-left: 4px solid #3182ce; border-radius: 6px; padding: 20px; margin: 24px 0; }
-  .contact-box p { margin-bottom: 8px; }
-  .contact-box p:last-child { margin-bottom: 0; }
-  label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
-  input[type="text"], input[type="email"], textarea { width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; outline: none; font-family: inherit; background: #fff; }
-  input:focus, textarea:focus { border-color: #3182ce; }
-  textarea { resize: vertical; min-height: 140px; }
-  .field-group { margin-bottom: 16px; }
-  button { background: #3182ce; color: #fff; border: none; padding: 14px 28px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
-  button:hover { background: #2c5282; }
-  .nav { text-align: center; margin-bottom: 24px; }
-  .nav a { margin: 0 12px; font-weight: 600; text-decoration: none; }
-  .nav a.active { color: #2c5282; }
-  footer { text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 0.85rem; }
-  footer a { color: #64748b; text-decoration: none; margin: 0 8px; }
-</style>
+<title>Contact | Ethio Calendar</title>
+<meta name="description" content="Contact the Ethio Calendar team.">
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="container">
-  <div class="nav">
-    <a href="/">Home</a>
-    <a href="/about.html">About</a>
-    <a href="/privacy.html">Privacy</a>
-    <a href="/contact.html" class="active">Contact</a>
+
+<!-- REAL NAVIGATION -->
+<header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px; flex-wrap: wrap; gap: 10px;">
+    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
+    <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600; flex-wrap: wrap;">
+      <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
+      <a href="/today.html" style="color:#1a202c; text-decoration:none;">Today's Date</a>
+      <a href="/printable-calendar.html" style="color:#1a202c; text-decoration:none;">Printable Calendar</a>
+      <a href="/day-counter.html" style="color:#1a202c; text-decoration:none;">Day Counter</a>
+      <a href="/time-converter.html" style="color:#1a202c; text-decoration:none;">Time Converter</a>
+    </nav>
   </div>
+</header>
+
+<div class="container">
   <div class="card">
     <h1>Contact Us</h1>
     <p>Have feedback, found a bug, or want to suggest a feature? We'd love to hear from you.</p>
 
-    <div class="contact-box">
-      <p><strong>Email:</strong> <a href="mailto:hello@tricalendar.app">hello@tricalendar.app</a></p>
-      <p><strong>Response time:</strong> We usually reply within 1–2 business days.</p>
+    <div style="background: #f7fafc; border-left: 4px solid #3182ce; border-radius: 6px; padding: 20px; margin: 24px 0;">
+      <p style="margin-bottom: 8px;"><strong>Email:</strong> <a href="mailto:hello@tricalendar.app" style="color: #3182ce;">hello@tricalendar.app</a></p>
+      <p style="margin-bottom: 0;"><strong>Response time:</strong> We usually reply within 1–2 business days.</p>
     </div>
 
     <h2>Send a Message</h2>
@@ -60,21 +45,26 @@
       </div>
       <div class="field-group">
         <label for="message">Message</label>
-        <textarea id="message" name="message" required></textarea>
+        <textarea id="message" name="message" style="min-height: 140px; resize: vertical;" required></textarea>
       </div>
-      <button type="submit">Send Message</button>
+      <button type="submit" class="primary">Send Message</button>
     </form>
 
     <h2>Common Questions</h2>
     <p><strong>Is the tool free?</strong> Yes, completely free. No signup, no paywall.</p>
-    <p><strong>Do you store my dates?</strong> No. All calculations run in your browser. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+    <p><strong>Do you store my dates?</strong> No. All calculations run in your browser. See our <a href="/privacy.html" style="color: #3182ce;">Privacy Policy</a>.</p>
     <p><strong>Is the Hijri conversion accurate?</strong> It uses the Umm al-Qura astronomical approximation. Local moon sightings may differ by ±1 day.</p>
     <p><strong>Can I suggest a feature?</strong> Absolutely. Use the form above or email us directly.</p>
   </div>
 </div>
+
 <footer>
-  <p>© 2026 Tri-Calendar Tool</p>
+  <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
   <p><a href="/">Home</a> <a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
 </footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
