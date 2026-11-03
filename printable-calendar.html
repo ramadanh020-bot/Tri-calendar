@@ -3,40 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What Year Is It In Ethiopia Today? | Ethiopian Date Today</title>
-<meta name="description" content="Find out today's date in the Ethiopian calendar. See the current Ethiopian year, month, and day instantly.">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Printable Ethiopian Calendar | Tri-Calendar (Gregorian & Hijri)</title>
+<meta name="description" content="Download or print the full Ethiopian calendar with Gregorian and Hijri dates side by side. Choose to show single, dual, or all three calendars.">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
   <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
+    
+    <!-- REPLACE WITH YOUR SVG LOGO IF YOU HAVE IT -->
     <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
+    
     <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600;">
       <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
-      <a href="/today.html" style="color:#3182ce; text-decoration:none;">Today's Date</a>
-      <a href="/printable-calendar.html" style="color:#1a202c; text-decoration:none;">Printable Calendar</a>
+      <a href="/today.html" style="color:#1a202c; text-decoration:none;">Today's Date</a>
+      <a href="/printable-calendar.html" style="color:#3182ce; text-decoration:none;">Printable Calendar</a>
     </nav>
   </div>
 </header>
 
 <div class="container">
-  <div class="card" style="text-align: center;">
-    <h1 style="font-size: 2.2rem; margin-bottom: 20px;">What Year Is It In Ethiopia Today?</h1>
-    
-    <!-- Large display target -->
-    <div id="today-display" style="font-size: 2rem; font-weight: 800; color: #2c5282; padding: 30px; background: #ebf8ff; border-radius: 12px; margin-bottom: 20px;">
-      <span id="td-eth">Loading...</span>
+  <h1 style="text-align: center; margin-bottom: 20px;">Printable Tri-Calendar</h1>
+  
+  <div class="card">
+    <div class="toggle-group no-print" id="priority-toggle" style="justify-content: center; width: 100%; margin-bottom: 20px;">
+      <span style="padding:8px 12px; font-size:0.85rem; font-weight:600; color:#4a5568;">Priority:</span>
+      <button class="active" data-priority="ethiopian">Ethiopian First</button>
+      <button data-priority="hijri">Hijri First</button>
+      <button data-priority="gregorian">Gregorian First</button>
     </div>
-    <p style="font-size: 1.2rem; color: #4a5568;">Gregorian Equivalent: <span id="td-greg" style="font-weight: 600;">—</span></p>
-    <p style="font-size: 1.1rem; color: #4a5568;">Hijri Equivalent: <span id="td-hijri" style="font-weight: 600;">—</span></p>
 
-    <div style="text-align: left; margin-top: 40px; line-height: 1.8; color: #4a5568;">
-      <h2>Why is the Ethiopian year different?</h2>
-      <p>The Ethiopian calendar is based on the Alexandrian or Coptic calendar. It is typically <strong>7 to 8 years behind the Gregorian calendar</strong> that is used in most of the world. This is because the Ethiopian calendar has an extra 13th month (Pagume) and calculates the birth of Jesus Christ differently.</p>
-      <p>When the Gregorian calendar is in September, the Ethiopian calendar celebrates its New Year (Enkutatash) on September 11th (or 12th in leap years).</p>
-      <p><a href="/" style="color: #3182ce; font-weight: bold;">Use our full Tri-Calendar Converter here →</a></p>
+    <div class="no-print" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; padding: 10px; background: #edf2f7; border-radius: 8px;">
+      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-eth" checked> Show Ethiopian</label>
+      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-greg" checked> Show Gregorian</label>
+      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-hijri" checked> Show Hijri</label>
+    </div>
+
+    <div class="print-controls no-print">
+      <div class="field-group">
+        <label for="print-year">Year</label>
+        <select id="print-year"></select>
+      </div>
+      <div class="field-group">
+        <label for="print-month">Month</label>
+        <select id="print-month"></select>
+      </div>
+    </div>
+
+    <div class="legend no-print">
+      <span><b>E</b> = Ethiopian</span>
+      <span><b>H</b> = Hijri</span>
+      <span><b>G</b> = Gregorian</span>
+      <span>🇪🇹 Ethiopian holiday</span>
+      <span>☪️ Hijri holiday</span>
+    </div>
+
+    <div id="print-area">
+      <div class="print-header">
+        <div class="print-brand">Ethio Calendar</div>
+        <div class="print-url">ethio-calendar.com</div>
+      </div>
+
+      <div class="tri-display" id="month-grids" style="grid-template-columns: 1fr; max-width: 640px; margin: 0 auto;">
+        <div class="cal-col" id="month-ethiopian">
+          <div class="month-title-block">
+            <div class="month-title-main" id="print-month-title">—</div>
+            <div class="month-title-sub" id="print-month-sub"></div>
+          </div>
+          <div class="month-grid" id="print-grid"></div>
+        </div>
+      </div>
+
+      <div class="holiday-section" id="holiday-section">
+        <ul class="holiday-list" id="holiday-list"></ul>
+      </div>
+
+      <div class="print-footer">
+        Printed from ethio-calendar.com — Free Ethiopian, Hijri & Gregorian calendar converter
+      </div>
+    </div>
+
+    <div class="download-bar no-print" style="justify-content: center; margin-top: 30px;">
+      <button class="primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <button class="secondary" onclick="printWholeYear()">📅 Download Whole Year</button>
     </div>
   </div>
 </div>
@@ -48,7 +99,22 @@
 
 <script src="/app.js"></script>
 <script>
-  // app.js handles the data injection, we just need to run it.
+  // NEW: Logic for the column toggles
+  document.getElementById('show-eth').addEventListener('change', (e) => {
+    document.querySelectorAll('.prefix').forEach(el => {
+      if(el.innerText === 'E') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
+    });
+  });
+  document.getElementById('show-greg').addEventListener('change', (e) => {
+    document.querySelectorAll('.prefix').forEach(el => {
+      if(el.innerText === 'G') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
+    });
+  });
+  document.getElementById('show-hijri').addEventListener('change', (e) => {
+    document.querySelectorAll('.prefix').forEach(el => {
+      if(el.innerText === 'H') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
+    });
+  });
 </script>
 </body>
 </html>
