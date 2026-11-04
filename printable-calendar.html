@@ -4,44 +4,113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Printable Ethiopian Calendar | Tri-Calendar (Gregorian & Hijri)</title>
-<meta name="description" content="Download or print the full Ethiopian calendar with Gregorian and Hijri dates side by side. Choose to show single, dual, or all three calendars.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='25' y='25' width='50' height='55' rx='6' fill='%233182ce' opacity='0.3' transform='rotate(-15 50 50)'/><rect x='25' y='25' width='50' height='55' rx='6' fill='%23ecc94b' opacity='0.6' transform='rotate(15 50 50)'/><rect x='20' y='20' width='60' height='65' rx='8' fill='%2338a169'/><rect x='25' y='15' width='6' height='15' rx='3' fill='%232f855a'/><rect x='45' y='15' width='6' height='15' rx='3' fill='%232f855a'/><rect x='65' y='15' width='6' height='15' rx='3' fill='%232f855a'/><line x1='30' y1='40' x2='70' y2='40' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='0.8'/><line x1='30' y1='55' x2='70' y2='55' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='0.8'/><line x1='30' y1='70' x2='70' y2='70' stroke='%23fff' stroke-width='4' stroke-linecap='round' opacity='0.8'/><circle cx='75' cy='25' r='10' fill='%23e53e3e'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<style>
+  /* CSS for the Print Preview & Actual Print */
+  #print-area {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-top: 20px;
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area { 
+      position: absolute; left: 0; top: 0; width: 100%; 
+      padding: 0; box-shadow: none; margin: 0;
+    }
+    .no-print { display: none !important; }
+    
+    /* Beautiful Print Typography */
+    .print-header { display: flex; justify-content: space-between; border-bottom: 2px solid #111; padding-bottom: 10px; margin-bottom: 20px; }
+    .print-brand { font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 12pt; }
+    .print-url { font-size: 10pt; color: #555; }
+    
+    .month-title-main { font-size: 26pt; font-weight: 800; text-align: center; margin-bottom: 4px; }
+    .month-title-sub { font-size: 12pt; text-align: center; color: #444; margin-bottom: 20px; font-style: italic; }
+
+    /* Perfect Grid for Print */
+    .month-grid { 
+      display: grid; grid-template-columns: repeat(7, 1fr); 
+      gap: 2px; border: 2px solid #111; border-radius: 8px; overflow: hidden;
+    }
+    .day-head { 
+      background: #f0f0f0 !important; font-weight: 800; padding: 8px 0; 
+      text-align: center; border-bottom: 2px solid #111; font-size: 11pt;
+    }
+    .day-cell { 
+      border: 1px solid #ddd; aspect-ratio: 1.1; padding: 6px; 
+      display: flex; flex-direction: column; justify-content: flex-start;
+    }
+    .day-cell.today { background: #ebf8ff !important; border: 2px solid #3182ce !important; }
+    .day-cell.holiday { background: #fff5f5 !important; border: 2px solid #e53e3e !important; }
+    
+    .date-row { font-size: 9pt; color: #555; line-height: 1.1; }
+    .date-row.priority-row { font-size: 16pt; font-weight: 800; color: #000; margin-bottom: 4px; }
+    .date-row .prefix { font-size: 8pt; font-weight: 700; color: #888; margin-right: 2px; }
+    .date-row.priority-row .prefix { color: #3182ce; }
+
+    .ethiopic-text { font-family: 'Noto Sans Ethiopic', sans-serif; }
+    [dir="rtl"] { font-family: 'Amiri', serif; direction: rtl; }
+    
+    .holiday-section { margin-top: 20px; border-top: 2px solid #111; padding-top: 10px; }
+    .holiday-list li { padding: 5px 0; border-bottom: 1px dotted #ccc; font-size: 11pt; }
+  }
+</style>
 </head>
 <body>
 
 <header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
-  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
-    
-    <!-- REPLACE WITH YOUR SVG LOGO IF YOU HAVE IT -->
-    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
-    
-    <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600;">
-      <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
-      <a href="/today.html" style="color:#1a202c; text-decoration:none;">Today's Date</a>
-      <a href="/printable-calendar.html" style="color:#3182ce; text-decoration:none;">Printable Calendar</a>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px; flex-wrap: wrap; gap: 10px;">
+    <a href="/" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:#1a202c;">
+      <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect x="25" y="25" width="50" height="55" rx="6" fill="#3182ce" opacity="0.3" transform="rotate(-15 50 50)" />
+        <rect x="25" y="25" width="50" height="55" rx="6" fill="#ecc94b" opacity="0.6" transform="rotate(15 50 50)" />
+        <rect x="20" y="20" width="60" height="65" rx="8" fill="#38a169" />
+        <rect x="25" y="15" width="6" height="15" rx="3" fill="#2f855a" />
+        <rect x="45" y="15" width="6" height="15" rx="3" fill="#2f855a" />
+        <rect x="65" y="15" width="6" height="15" rx="3" fill="#2f855a" />
+        <line x1="30" y1="40" x2="70" y2="40" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+        <line x1="30" y1="55" x2="70" y2="55" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+        <line x1="30" y1="70" x2="70" y2="70" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+        <circle cx="75" cy="25" r="10" fill="#e53e3e" />
+      </svg>
+      <span style="font-weight:800; font-size:1.2rem;">Ethio Calendar</span>
+    </a>
+    <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600; flex-wrap: wrap;">
+      <a href="https://ethio-calendar.com/" style="color:#1a202c; text-decoration:none;">Converter</a>
+      <a href="https://ethio-calendar.com/today.html" style="color:#1a202c; text-decoration:none;">Today's Date</a>
+      <a href="https://ethio-calendar.com/printable-calendar.html" style="color:#3182ce; text-decoration:none;">Printable Calendar</a>
     </nav>
   </div>
 </header>
 
 <div class="container">
-  <h1 style="text-align: center; margin-bottom: 20px;">Printable Tri-Calendar</h1>
+  <h1 style="text-align: center; margin-bottom: 20px;" class="no-print">Printable Tri-Calendar</h1>
   
-  <div class="card">
-    <div class="toggle-group no-print" id="priority-toggle" style="justify-content: center; width: 100%; margin-bottom: 20px;">
+  <div class="card no-print">
+    
+    <!-- LANGUAGE SELECTION -->
+    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+      <button class="primary" id="lang-en" onclick="setPrintLang('en')" style="padding: 8px 16px; font-size: 0.9rem;">English</button>
+      <button class="secondary" id="lang-am" onclick="setPrintLang('am')" style="padding: 8px 16px; font-size: 0.9rem; margin: 0;">አማርኛ</button>
+      <button class="secondary" id="lang-ar" onclick="setPrintLang('ar')" style="padding: 8px 16px; font-size: 0.9rem; margin: 0;">العربية</button>
+    </div>
+
+    <div class="toggle-group" id="priority-toggle" style="justify-content: center; width: 100%; margin-bottom: 20px;">
       <span style="padding:8px 12px; font-size:0.85rem; font-weight:600; color:#4a5568;">Priority:</span>
       <button class="active" data-priority="ethiopian">Ethiopian First</button>
       <button data-priority="hijri">Hijri First</button>
       <button data-priority="gregorian">Gregorian First</button>
     </div>
 
-    <div class="no-print" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; padding: 10px; background: #edf2f7; border-radius: 8px;">
-      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-eth" checked> Show Ethiopian</label>
-      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-greg" checked> Show Gregorian</label>
-      <label style="margin: 0; cursor: pointer;"><input type="checkbox" id="show-hijri" checked> Show Hijri</label>
-    </div>
-
-    <div class="print-controls no-print">
+    <div class="print-controls">
       <div class="field-group">
         <label for="print-year">Year</label>
         <select id="print-year"></select>
@@ -52,69 +121,64 @@
       </div>
     </div>
 
-    <div class="legend no-print">
-      <span><b>E</b> = Ethiopian</span>
-      <span><b>H</b> = Hijri</span>
-      <span><b>G</b> = Gregorian</span>
-      <span>🇪🇹 Ethiopian holiday</span>
-      <span>☪️ Hijri holiday</span>
-    </div>
-
-    <div id="print-area">
-      <div class="print-header">
-        <div class="print-brand">Ethio Calendar</div>
-        <div class="print-url">ethio-calendar.com</div>
-      </div>
-
-      <div class="tri-display" id="month-grids" style="grid-template-columns: 1fr; max-width: 640px; margin: 0 auto;">
-        <div class="cal-col" id="month-ethiopian">
-          <div class="month-title-block">
-            <div class="month-title-main" id="print-month-title">—</div>
-            <div class="month-title-sub" id="print-month-sub"></div>
-          </div>
-          <div class="month-grid" id="print-grid"></div>
-        </div>
-      </div>
-
-      <div class="holiday-section" id="holiday-section">
-        <ul class="holiday-list" id="holiday-list"></ul>
-      </div>
-
-      <div class="print-footer">
-        Printed from ethio-calendar.com — Free Ethiopian, Hijri & Gregorian calendar converter
-      </div>
-    </div>
-
-    <div class="download-bar no-print" style="justify-content: center; margin-top: 30px;">
+    <div class="download-bar" style="justify-content: center; margin-top: 30px;">
       <button class="primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
       <button class="secondary" onclick="printWholeYear()">📅 Download Whole Year</button>
     </div>
   </div>
+
+  <!-- PRINT AREA -->
+  <div id="print-area">
+    <div class="print-header">
+      <div class="print-brand">Ethio Calendar</div>
+      <div class="print-url">ethio-calendar.com</div>
+    </div>
+
+    <div class="tri-display" id="month-grids" style="grid-template-columns: 1fr;">
+      <div class="cal-col" style="border: none; padding: 0;">
+        <div class="month-title-block">
+          <div class="month-title-main" id="print-month-title">—</div>
+          <div class="month-title-sub" id="print-month-sub"></div>
+        </div>
+        <div class="month-grid" id="print-grid"></div>
+      </div>
+    </div>
+
+    <div class="holiday-section" id="holiday-section">
+      <ul class="holiday-list" id="holiday-list"></ul>
+    </div>
+
+    <div class="print-footer" style="text-align: center; margin-top: 20px; font-size: 10pt; color: #888;">
+      Printed from ethio-calendar.com — Free Ethiopian, Hijri & Gregorian calendar
+    </div>
+  </div>
+
 </div>
 
-<footer>
+<footer class="no-print">
   <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
   <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
 </footer>
 
 <script src="/app.js"></script>
 <script>
-  // NEW: Logic for the column toggles
-  document.getElementById('show-eth').addEventListener('change', (e) => {
-    document.querySelectorAll('.prefix').forEach(el => {
-      if(el.innerText === 'E') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
-    });
-  });
-  document.getElementById('show-greg').addEventListener('change', (e) => {
-    document.querySelectorAll('.prefix').forEach(el => {
-      if(el.innerText === 'G') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
-    });
-  });
-  document.getElementById('show-hijri').addEventListener('change', (e) => {
-    document.querySelectorAll('.prefix').forEach(el => {
-      if(el.innerText === 'H') el.parentElement.style.display = e.target.checked ? 'flex' : 'none';
-    });
-  });
+  // Specific UI logic for the Print page
+  function setPrintLang(lang) {
+    // Update global variable in app.js
+    window.uiLang = lang;
+    
+    // Update buttons visually
+    document.getElementById('lang-en').className = lang === 'en' ? 'primary' : 'secondary';
+    document.getElementById('lang-am').className = lang === 'am' ? 'primary' : 'secondary';
+    document.getElementById('lang-ar').className = lang === 'ar' ? 'primary' : 'secondary';
+
+    // Re-render the calendar
+    if (typeof populatePrintYearDropdown === 'function') {
+      populatePrintYearDropdown();
+      populatePrintMonthDropdown();
+      renderPrintView();
+    }
+  }
 </script>
 </body>
 </html>
