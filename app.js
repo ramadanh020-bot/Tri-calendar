@@ -311,31 +311,82 @@ function renderHolidays(calendarType, year, month) {
 function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
   if (!grid) return;
   grid.innerHTML = '';
-  ['S','M','T','W','T','F','S'].forEach(d => { const el = document.createElement('div'); el.className = 'day-head'; el.textContent = d; grid.appendChild(el); });
+
+  // Render Day Headers
+  ['S','M','T','W','T','F','S'].forEach(d => { 
+    const el = document.createElement('div'); 
+    el.className = 'day-head'; 
+    el.textContent = d; 
+    grid.appendChild(el); 
+  });
 
   let startJdn, daysInMonth, firstDow;
-  if (calendarType === 'gregorian') { startJdn = gregorianToJDN(year, month, 1); daysInMonth = new Date(year, month, 0).getDate(); firstDow = new Date(year, month - 1, 1).getDay(); }
-  else if (calendarType === 'ethiopian') { startJdn = ethiopianToJDN(year, month, 1); daysInMonth = getEthiopianMonthLength(year, month); firstDow = (startJdn + 1) % 7; }
-  else { startJdn = hijriToJDN(year, month, 1); daysInMonth = getHijriMonthLength(year, month); firstDow = (startJdn + 1) % 7; }
+  if (calendarType === 'gregorian') { 
+    startJdn = gregorianToJDN(year, month, 1); 
+    daysInMonth = new Date(year, month, 0).getDate(); 
+    firstDow = new Date(year, month - 1, 1).getDay(); 
+  } else if (calendarType === 'ethiopian') { 
+    startJdn = ethiopianToJDN(year, month, 1); 
+    daysInMonth = getEthiopianMonthLength(year, month); 
+    firstDow = (startJdn + 1) % 7; 
+  } else { 
+    startJdn = hijriToJDN(year, month, 1); 
+    daysInMonth = getHijriMonthLength(year, month); 
+    firstDow = (startJdn + 1) % 7; 
+  }
 
   const maxDays = calendarType === 'gregorian' ? 31 : 30;
-  if (daysInMonth > maxDays) daysInMonth = maxDays; if (daysInMonth < 1) daysInMonth = 1;
-  const holidayJdns = new Set(getHolidaysForMonth(calendarType, year, month).map(h => h.date));
-  for (let i = 0; i < firstDow; i++) grid.appendChild(document.createElement('div'));
+  if (daysInMonth > maxDays) daysInMonth = maxDays; 
+  if (daysInMonth < 1) daysInMonth = 1;
 
+  // Get holidays for this month to highlight them
+  const holidayJdns = new Set(getHolidaysForMonth(calendarType, year, month).map(h => h.date));
+
+  // Fill empty slots before the 1st of the month
+  for (let i = 0; i < firstDow; i++) {
+    grid.appendChild(document.createElement('div'));
+  }
+
+  // Draw the actual days
   let dayCounter = 1;
   for (let j = startJdn; dayCounter <= daysInMonth; j++) {
-    if (calendarType === 'hijri' && jdnToHijri(j).year !== year || jdnToHijri(j).month !== month) { if (jdnToHijri(j).year > year || (jdnToHijri(j).year === year && jdnToHijri(j).month > month)) break; else continue; }
-    if (calendarType === 'ethiopian' && jdnToEthiopian(j).year !== year || jdnToEthiopian(j).month !== month) { if (jdnToEthiopian(j).year > year || (jdnToEthiopian(j).year === year && jdnToEthiopian(j).month > month)) break; else continue; }
+    // Safety check to ensure we don't draw days from the next month
+    if (calendarType === 'hijri' && (jdnToHijri(j).year !== year || jdnToHijri(j).month !== month)) {
+      if (jdnToHijri(j).year > year || (jdnToHijri(j).year === year && jdnToHijri(j).month > month)) break; 
+      else continue; 
+    }
+    if (calendarType === 'ethiopian' && (jdnToEthiopian(j).year !== year || jdnToEthiopian(j).month !== month)) {
+      if (jdnToEthiopian(j).year > year || (jdnToEthiopian(j).year === year && jdnToEthiopian(j).month > month)) break; 
+      else continue; 
+    }
 
-    const data = { gregorian: { prefix: 'G', value: localizeNumber(jdnToGregorian(j).day, 'gregorian') }, hijri: { prefix: 'H', value: localizeNumber(jdnToHijri(j).day, 'hijri') }, ethiopian: { prefix: 'E', value: localizeNumber(jdnToEthiopian(j).day, 'ethiopian') } };
-    const order = ['gregorian', 'hijri', 'ethiopian'].filter(k => k !== priority); order.unshift(priority);
+    // Get the day values for all 3 calendars
+    const data = { 
+      gregorian: { prefix: 'G', value: localizeNumber(jdnToGregorian(j).day, 'gregorian') }, 
+      hijri: { prefix: 'H', value: localizeNumber(jdnToHijri(j).day, 'hijri') }, 
+      ethiopian: { prefix: 'E', value: localizeNumber(jdnToEthiopian(j).day, 'ethiopian') } 
+    };
+    
+    // Determine the order (which calendar is prioritized)
+    const order = ['gregorian', 'hijri', 'ethiopian'].filter(k => k !== priority); 
+    order.unshift(priority);
 
-    const cell = document.createElement('div'); cell.className = 'day-cell';
-    if (j === todayJdn) cell.classList.add('today'); if (holidayJdns.has(j)) cell.classList.add('holiday');
-    cell.innerHTML = order.map((key, i) => `<div class="${i === 0 ? 'date-row priority-row' : 'date-row'}"><span class="prefix">${data[key].prefix}</span><span>${data[key].value}</span></div>`).join('');
+    const cell = document.createElement('div'); 
+    cell.className = 'day-cell';
+    if (j === todayJdn) cell.classList.add('today'); 
+    if (holidayJdns.has(j)) cell.classList.add('holiday');
+
+    cell.innerHTML = order.map((key, i) => 
+      `<div class="${i === 0 ? 'date-row priority-row' : 'date-row'}">
+         <span class="prefix">${data[key].prefix}</span>
+         <span>${data[key].value}</span>
+       </div>`
+    ).join('');
+
     if (uiLang === 'am' && calendarType === 'ethiopian') cell.classList.add('ethiopic-text');
-    grid.appendChild(cell); dayCounter++;
+    
+    grid.appendChild(cell); 
+    dayCounter++;
   }
 }
 
