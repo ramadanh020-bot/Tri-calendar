@@ -566,15 +566,19 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
     if (currentJdn === todayJdn) cell.classList.add('today');
     if (holidayJdns.has(currentJdn)) cell.classList.add('holiday');
 
-    cell.innerHTML = `
-      <div class="cell-top">
-        <span class="primary-num">${values[priority].num}</span>
-        <div class="secondary-badges">
-          ${secondaryKeys.map(k => `<span class="sec-badge"><span class="badge-tag">${values[k].label}</span> ${values[k].num}</span>`).join('')}
-        </div>
+// Replace the cell.innerHTML generation with this vertical structure:
+cell.innerHTML = `
+  <div class="cell-primary-date">${values[priority].num}</div>
+  <div class="secondary-dates-vertical">
+    ${secondaryKeys.map(k => `
+      <div class="sec-date-row">
+        <span class="prefix">${values[k].label}</span>
+        <span class="val">${values[k].num}</span>
       </div>
-      <div class="cell-writing-area"></div>
-    `;
+    `).join('')}
+  </div>
+  ${noteText || ''}
+`;
 
     if (uiLang === 'am' && calendarType === 'ethiopian') cell.classList.add('ethiopic-text');
     grid.appendChild(cell);
