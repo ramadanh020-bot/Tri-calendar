@@ -1,41 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><title>Ethiopian Time Converter | Standard Time</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethiopian ↔ Standard Time Converter | Ethio Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
-  <div class="container" style="display:flex; justify-content:space-between; padding:0 20px;">
-    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none;">Ethio Calendar</a>
-    <nav style="display:flex; gap:15px; font-weight:600;"><a href="/">Converter</a><a href="/today.html">Today</a><a href="/printable-calendar.html">Printable</a></nav>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px; flex-wrap:wrap; gap:10px;">
+    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
+    <nav style="display:flex; gap:15px; font-weight:600; font-size:0.9rem; flex-wrap:wrap;">
+      <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
+      <a href="/today.html" style="color:#1a202c; text-decoration:none;">Today</a>
+      <a href="/printable-calendar.html" style="color:#1a202c; text-decoration:none;">Printable</a>
+      <a href="/Day-counter.html" style="color:#1a202c; text-decoration:none;">Day Counter</a>
+      <a href="/Time-Converter.html" style="color:#3182ce; text-decoration:none;">Time Converter</a>
+    </nav>
   </div>
 </header>
+
 <div class="container">
   <div class="card">
-    <h1>Ethiopian ↔ Standard Time</h1>
+    <h1>Ethiopian ↔ Standard Time Converter</h1>
+    <p style="color:#64748b; font-size:0.95rem; margin-bottom:20px;">Ethiopian time starts at sunrise (1:00 corresponds to 7:00 AM standard time).</p>
+    
     <div class="toggle-group" id="direction-toggle">
-      <button class="active" data-dir="to-standard">Ethiopian → Standard</button>
-      <button data-dir="to-ethiopian">Standard → Ethiopian</button>
+      <button class="active" data-dir="to-standard">Ethiopian → Standard (12h)</button>
+      <button data-dir="to-ethiopian">Standard (12h) → Ethiopian</button>
     </div>
+    
     <div class="row">
-      <div class="field-group"><label>Hour (1–12)</label><input type="number" id="hour-input" min="1" max="12" value="6"></div>
-      <div class="field-group"><label>Minute</label><input type="number" id="minute-input" min="0" max="59" value="30"></div>
+      <div class="field-group">
+        <label for="hour-input">Hour (1–12)</label>
+        <input type="number" id="hour-input" min="1" max="12" value="6">
+      </div>
+      <div class="field-group">
+        <label for="minute-input">Minute (0–59)</label>
+        <input type="number" id="minute-input" min="0" max="59" value="0">
+      </div>
     </div>
+    
     <div class="field-group">
       <label for="period-input" id="period-label">Period (Ethiopian)</label>
       <select id="period-input">
-        <option value="day">Day (ከሰዓት)</option>
-        <option value="night">Night (ከምሽት)</option>
+        <option value="day">Day (ቀን / ከሰዓት)</option>
+        <option value="night">Night (ማታ / ከምሽት)</option>
       </select>
     </div>
-    <div class="result-box">
-      <div class="label">Converted Time</div>
+    
+    <div class="result-box" style="margin-top:20px;">
+      <div class="label">Converted Result</div>
       <div class="value" id="converted-time">—</div>
     </div>
   </div>
+
+  <div class="card">
+    <h2>World Clock (Current Standard Times)</h2>
+    <div class="world-grid" id="world-grid"></div>
+  </div>
 </div>
-<footer><p>© <span id="year"></span> Ethio Calendar</p></footer>
+
+<footer>
+  <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
+  <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
+</footer>
 <script src="/app.js"></script>
 </body>
 </html>
