@@ -4,19 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What Year Is It In Ethiopia Today? | Ethiopian Date Today</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
-  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px; flex-wrap:wrap; gap:10px;">
     <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
-    <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600;">
+    <nav style="display:flex; gap:15px; font-size:0.9rem; font-weight:600; flex-wrap:wrap;">
       <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
       <a href="/today.html" style="color:#3182ce; text-decoration:none;">Today's Date</a>
       <a href="/printable-calendar.html" style="color:#1a202c; text-decoration:none;">Printable Calendar</a>
+      <a href="/Day-counter.html" style="color:#1a202c; text-decoration:none;">Day Counter</a>
+      <a href="/Time-Converter.html" style="color:#1a202c; text-decoration:none;">Time Converter</a>
     </nav>
   </div>
 </header>
@@ -25,14 +26,18 @@
   <div class="card" style="text-align: center;">
     <h1 style="font-size: 2.2rem; margin-bottom: 20px;">What Year Is It In Ethiopia Today?</h1>
     
-    <!-- Large display target -->
-    <div id="today-display" style="font-size: 2rem; font-weight: 800; color: #2c5282; padding: 30px; background: #ebf8ff; border-radius: 12px; margin-bottom: 20px;">
+    <div id="today-display" style="font-size: 2rem; font-weight: 800; color: #2c5282; padding: 25px; background: #ebf8ff; border-radius: 12px; margin-bottom: 20px;">
       <span id="td-eth">Loading...</span>
+      <div id="td-eth-day" style="font-size:1.1rem; color:#4a5568; margin-top:6px; font-weight:600;"></div>
     </div>
-    <p style="font-size: 1.2rem; color: #4a5568;">Gregorian Equivalent: <span id="td-greg" style="font-weight: 600;">—</span></p>
-    <p style="font-size: 1.1rem; color: #4a5568;">Hijri Equivalent: <span id="td-hijri" style="font-weight: 600;">—</span></p>
+    
+    <p style="font-size: 1.2rem; color: #4a5568; margin-bottom: 8px;">
+      Gregorian Equivalent: <span id="td-greg" style="font-weight: 700; color:#1a202c;">—</span> (<span id="td-greg-day"></span>)
+    </p>
+    <p style="font-size: 1.15rem; color: #4a5568;">
+      Hijri Equivalent: <span id="td-hijri" style="font-weight: 700; color:#1a202c;">—</span> (<span id="td-hijri-day"></span>)
+    </p>
 
-    <!-- NEW: Language Toggle -->
     <div class="toggle-group" id="lang-toggle" style="margin-top: 30px; justify-content: center;">
       <button class="active" data-lang="en">English</button>
       <button data-lang="am">አማርኛ</button>
@@ -48,7 +53,8 @@
 </div>
 
 <footer>
-  <p>© <span id="year"></span> Ethio Calendar</p>
+  <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
+  <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
 </footer>
 
 <script src="/app.js"></script>
