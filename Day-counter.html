@@ -1,33 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><title>Day Counter | Ethiopian & Gregorian</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day Counter | Ethiopian, Gregorian & Hijri Date Difference</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="no-print" style="background:#fff; border-bottom:1px solid #e2e8f0; padding:15px 0; margin-bottom: 20px;">
-  <div class="container" style="display:flex; justify-content:space-between; padding:0 20px;">
-    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none;">Ethio Calendar</a>
-    <nav style="display:flex; gap:15px; font-weight:600;"><a href="/">Converter</a><a href="/today.html">Today</a><a href="/printable-calendar.html">Printable</a></nav>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:0 20px; flex-wrap:wrap; gap:10px;">
+    <a href="/" style="font-weight:800; color:#3182ce; text-decoration:none; font-size:1.2rem;">Ethio Calendar</a>
+    <nav style="display:flex; gap:15px; font-weight:600; font-size:0.9rem; flex-wrap:wrap;">
+      <a href="/" style="color:#1a202c; text-decoration:none;">Converter</a>
+      <a href="/today.html" style="color:#1a202c; text-decoration:none;">Today</a>
+      <a href="/printable-calendar.html" style="color:#1a202c; text-decoration:none;">Printable</a>
+      <a href="/Day-counter.html" style="color:#3182ce; text-decoration:none;">Day Counter</a>
+      <a href="/Time-Converter.html" style="color:#1a202c; text-decoration:none;">Time Converter</a>
+    </nav>
   </div>
 </header>
+
 <div class="container">
   <div class="card">
     <h1>Day Counter</h1>
-    <p style="color:#64748b; font-size:0.9rem; margin-bottom:16px;">Count days between two dates across all three calendars.</p>
+    <p style="color:#64748b; font-size:0.95rem; margin-bottom:20px;">Calculate the exact duration between two dates with parallel Gregorian, Ethiopian, and Hijri breakdown.</p>
     <div class="row">
-      <div class="field-group"><label>Start Date (Gregorian)</label><input type="date" id="start-date"></div>
-      <div class="field-group"><label>End Date (Gregorian)</label><input type="date" id="end-date"></div>
+      <div class="field-group">
+        <label for="start-date">Start Date (Gregorian)</label>
+        <input type="date" id="start-date">
+      </div>
+      <div class="field-group">
+        <label for="end-date">End Date (Gregorian)</label>
+        <input type="date" id="end-date">
+      </div>
     </div>
     <button class="primary" onclick="countDays()">Count Days</button>
-    <div class="result-box" id="day-result" style="display:none;">
-      <div class="label">Difference</div>
+    
+    <div class="result-box" id="day-result" style="display:none; margin-top:20px;">
+      <div class="label">Total Difference</div>
       <div class="value" id="day-diff">—</div>
-      <div class="cal-detail" id="day-detail" style="margin-top:8px; color:#64748b;"></div>
+      <div class="cal-detail" id="day-detail" style="margin-top:12px; line-height:1.7; color:#4a5568;"></div>
     </div>
   </div>
 </div>
-<footer><p>© <span id="year"></span> Ethio Calendar</p></footer>
+
+<footer>
+  <p>© <span id="year"></span> Ethio Calendar — Ethiopian Calendar Converter</p>
+  <p><a href="/about.html">About</a> <a href="/privacy.html">Privacy</a> <a href="/contact.html">Contact</a></p>
+</footer>
 <script src="/app.js"></script>
 </body>
 </html>
