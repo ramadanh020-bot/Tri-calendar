@@ -1,5 +1,5 @@
 // ============================================================
-// CALENDAR DATA & CONSTANTS
+// 1. CALENDAR DATA & CONSTANTS
 // ============================================================
 const ethMonths = {
   en: ["Meskerem","Tikimt","Hidar","Tahsas","Tir","Yekatit","Megabit","Miazia","Ginbot","Sene","Hamle","Nehase","Pagume"],
@@ -23,6 +23,12 @@ const hijriDays = {
 
 const gregMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const gregDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+const weekHeaders = {
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  am: ['እሑድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ', 'ዓርብ', 'ቅዳሜ'],
+  ar: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+};
 
 const ethiopianHolidays = [
   { ethMonth: 1, ethDay: 1, name: "Enkutatash (Ethiopian New Year)", nameAm: "እንቁጣጣሽ" },
@@ -63,7 +69,7 @@ let fromCalendar = 'gregorian';
 let direction = 'to-standard';
 
 // ============================================================
-// NUMERALS & LOCALIZATION HELPERS
+// 2. NUMERALS & LOCALIZATION HELPERS
 // ============================================================
 const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
 function toArabicNumerals(num) {
@@ -85,7 +91,7 @@ function hijriNeedsRTL() { return uiLang === 'ar'; }
 function ethNeedsEthiopicFont() { return uiLang === 'am'; }
 
 // ============================================================
-// JDN CALENDAR CONVERSION LOGIC
+// 3. JDN CALENDAR CONVERSION LOGIC
 // ============================================================
 function gregorianToJDN(y, m, d) {
   const a = Math.floor((14 - m) / 12);
@@ -194,7 +200,7 @@ function getHijriMonthLength(year, month) { return getHijriMonthDays(year, month
 function getEthiopianMonthLength(year, month) { return month === 13 ? ((year % 4 === 3) ? 6 : 5) : 30; }
 
 // ============================================================
-// HOLIDAYS & COMPUTATION
+// 4. HOLIDAYS & COMPUTATION
 // ============================================================
 function computeOrthodoxEaster(gregYear) {
   const a = gregYear % 4;
@@ -302,7 +308,48 @@ function getCorrespondingMonths(calendarType, year, month) {
 }
 
 // ============================================================
-// UI RENDERING: TODAY & CONVERTERS
+// 5. LOCAL PC REMINDERS & NOTES (localStorage)
+// ============================================================
+function getStoredNotes() {
+  try {
+    return JSON.parse(localStorage.getItem('ethio_cal_notes') || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveStoredNotes(notes) {
+  try {
+    localStorage.setItem('ethio_cal_notes', JSON.stringify(notes));
+  } catch (e) {
+    console.error('Failed to save to localStorage', e);
+  }
+}
+
+let activeModalJdn = null;
+
+function openNoteModal(jdn, dateLabel) {
+  activeModalJdn = jdn;
+  const modal = document.getElementById('note-modal');
+  const title = document.getElementById('modal-date-title');
+  const textarea = document.getElementById('modal-note-text');
+  if (!modal || !textarea) return;
+
+  const notes = getStoredNotes();
+  textarea.value = notes[jdn] || '';
+  if (title) title.textContent = dateLabel || 'Date Reminder';
+  modal.classList.add('active');
+  textarea.focus();
+}
+
+function closeNoteModal() {
+  const modal = document.getElementById('note-modal');
+  if (modal) modal.classList.remove('active');
+  activeModalJdn = null;
+}
+
+// ============================================================
+// 6. UI RENDERING: TODAY & CONVERTERS
 // ============================================================
 function updateColumnLabels() {
   const ethHeader = document.querySelector('#today-ethiopian .cal-label');
@@ -404,7 +451,7 @@ function convertDate() {
 }
 
 // ============================================================
-// UI RENDERING: INTERACTIVE ON-SCREEN PRINT VIEW
+// 7. UI RENDERING: INTERACTIVE ON-SCREEN PRINT VIEW
 // ============================================================
 function getCurrentPeriodForPriority() {
   const now = new Date(), jdn = gregorianToJDN(now.getFullYear(), now.getMonth() + 1, now.getDate());
@@ -518,11 +565,13 @@ function renderHolidays(calendarType, year, month) {
 function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
   if (!grid) return;
   grid.innerHTML = '';
-  const days = uiLang === 'am' ? ['እሑድ','ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','ዓርብ','ቅዳሜ'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  
+  const days = weekHeaders[uiLang] || weekHeaders.en;
   days.forEach(d => {
     const el = document.createElement('div');
     el.className = 'day-head';
     el.textContent = d;
+    if (uiLang === 'ar') el.setAttribute('dir', 'rtl');
     grid.appendChild(el);
   });
 
@@ -546,6 +595,7 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
   }
 
   const holidayJdns = new Set(getHolidaysForMonth(calendarType, year, month).map(h => h.date));
+  const notes = getStoredNotes();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const currentJdn = startJdn + (day - 1);
@@ -565,20 +615,27 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
     cell.className = 'day-cell';
     if (currentJdn === todayJdn) cell.classList.add('today');
     if (holidayJdns.has(currentJdn)) cell.classList.add('holiday');
+    if (notes[currentJdn]) cell.classList.add('has-note');
 
-// Replace the cell.innerHTML generation with this vertical structure:
-cell.innerHTML = `
-  <div class="cell-primary-date">${values[priority].num}</div>
-  <div class="secondary-dates-vertical">
-    ${secondaryKeys.map(k => `
-      <div class="sec-date-row">
-        <span class="prefix">${values[k].label}</span>
-        <span class="val">${values[k].num}</span>
+    const noteHtml = notes[currentJdn] ? `<div class="cell-note-snippet" title="${notes[currentJdn]}">📝 ${notes[currentJdn]}</div>` : '';
+
+    cell.innerHTML = `
+      <div class="cell-primary-date">${values[priority].num}</div>
+      <div class="secondary-dates-vertical">
+        ${secondaryKeys.map(k => `
+          <div class="sec-date-row">
+            <span class="prefix">${values[k].label}</span>
+            <span class="val">${values[k].num}</span>
+          </div>
+        `).join('')}
       </div>
-    `).join('')}
-  </div>
-  ${noteText || ''}
-`;
+      ${noteHtml}
+    `;
+
+    const dateLabel = `${values[priority].label}: ${values[priority].num} | G: ${greg.day}/${greg.month}/${greg.year} | E: ${eth.day}/${eth.month}/${eth.year}`;
+    cell.addEventListener('click', () => {
+      openNoteModal(currentJdn, dateLabel);
+    });
 
     if (uiLang === 'am' && calendarType === 'ethiopian') cell.classList.add('ethiopic-text');
     grid.appendChild(cell);
@@ -586,7 +643,7 @@ cell.innerHTML = `
 }
 
 // ============================================================
-// PREMIUM PRINTABLE YEAR PDF / VIEW GENERATOR
+// 8. PREMIUM PRINTABLE YEAR PDF / VIEW GENERATOR
 // ============================================================
 function printWholeYear() {
   const yearSel = document.getElementById('print-year');
@@ -679,18 +736,20 @@ function printWholeYear() {
     .brand-sub { font-size: 7.5pt; font-weight: 500; color: #64748b; }
     .sheet-num { font-size: 8pt; font-weight: 700; color: #0f172a; }
     .sheet-title-banner { text-align: center; margin-bottom: 14px; }
-    .title-primary { font-family: 'Cinzel', serif; font-size: 21pt; font-weight: 800; color: #0f172a; }
+    .title-primary { font-family: 'Cinzel', 'Noto Sans Ethiopic', 'Amiri', serif; font-size: 21pt; font-weight: 800; color: #0f172a; }
     .title-sub { font-size: 8.5pt; color: #475569; margin-top: 4px; display: flex; justify-content: center; gap: 8px; }
     .sheet-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1.5px solid #0f172a; border-left: 1px solid #cbd5e1; flex-grow: 1; }
     .day-head { font-size: 8pt; font-weight: 800; text-align: center; padding: 6px 0; text-transform: uppercase; color: #0f172a; background: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1.5px solid #0f172a; }
-    .day-cell { border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 6px; display: flex; flex-direction: column; justify-content: space-between; background: #fff; min-height: 29mm; }
+    .day-cell { border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 6px 8px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; background: #fff; min-height: 28mm; }
     .day-cell.empty { background: #fafafa; }
-    .cell-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .primary-num { font-size: 13.5pt; font-weight: 800; color: #0f172a; }
-    .holiday .primary-num { color: #b91c1c; }
-    .secondary-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-    .sec-badge { font-size: 7pt; font-weight: 600; color: #475569; }
-    .badge-tag { font-size: 6pt; font-weight: 800; color: #94a3b8; }
+    .day-cell.today { background: #eaf3fb; }
+    .day-cell.holiday { background: #fdf0ee; }
+    .cell-primary-date { font-size: 14pt; font-weight: 900; color: #0f172a; margin-bottom: 4px; line-height: 1; }
+    .holiday .cell-primary-date { color: #b91c1c; }
+    .secondary-dates-vertical { display: flex; flex-direction: column; gap: 2px; font-size: 7.5pt; color: #475569; }
+    .sec-date-row { display: flex; align-items: baseline; gap: 4px; }
+    .sec-date-row .prefix { font-size: 6pt; font-weight: 800; color: #94a3b8; }
+    .sec-date-row .val { font-weight: 600; }
     .sheet-holidays { border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 10px; margin-top: 10px; background: #fafbfc; }
     .h-header { font-size: 7pt; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 5px; border-bottom: 1px solid #e2e8f0; }
     .h-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px 14px; }
@@ -719,11 +778,12 @@ function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
   if (!grid) return;
   grid.innerHTML = '';
 
-  const days = uiLang === 'am' ? ['እሑድ','ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','ዓርብ','ቅዳሜ'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const days = weekHeaders[uiLang] || weekHeaders.en;
   days.forEach(d => {
     const el = win.document.createElement('div');
     el.className = 'day-head';
     el.textContent = d;
+    if (uiLang === 'ar') el.setAttribute('dir', 'rtl');
     grid.appendChild(el);
   });
 
@@ -768,13 +828,15 @@ function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
     if (holidayJdns.has(currentJdn)) cell.classList.add('holiday');
 
     cell.innerHTML = `
-      <div class="cell-top">
-        <span class="primary-num">${values[priority].num}</span>
-        <div class="secondary-badges">
-          ${secondaryKeys.map(k => `<span class="sec-badge"><span class="badge-tag">${values[k].label}</span> ${values[k].num}</span>`).join('')}
-        </div>
+      <div class="cell-primary-date">${values[priority].num}</div>
+      <div class="secondary-dates-vertical">
+        ${secondaryKeys.map(k => `
+          <div class="sec-date-row">
+            <span class="prefix">${values[k].label}</span>
+            <span class="val">${values[k].num}</span>
+          </div>
+        `).join('')}
       </div>
-      <div class="cell-writing-area"></div>
     `;
 
     if (uiLang === 'am' && calendarType === 'ethiopian') cell.classList.add('ethiopic-text');
@@ -783,7 +845,7 @@ function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
 }
 
 // ============================================================
-// TOOLS: DAY DIFFERENCE & TIME CONVERTER
+// 9. TOOLS: DAY DIFFERENCE & TIME CONVERTER
 // ============================================================
 function countDays() {
   const startEl = document.getElementById('start-date');
@@ -879,15 +941,25 @@ function renderWorldClock() {
 }
 
 // ============================================================
-// INITIALIZATION
+// 10. INITIALIZATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   const langToggle = document.getElementById('lang-toggle');
   if (langToggle) {
     langToggle.querySelectorAll('button').forEach(btn => {
       btn.addEventListener('click', function() {
-        langToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        langToggle.querySelectorAll('button').forEach(b => {
+          b.classList.remove('active');
+          if (b.classList.contains('primary') || b.classList.contains('secondary')) {
+            b.classList.remove('primary');
+            b.classList.add('secondary');
+          }
+        });
         this.classList.add('active');
+        if (this.classList.contains('secondary')) {
+          this.classList.remove('secondary');
+          this.classList.add('primary');
+        }
         uiLang = this.dataset.lang;
         renderToday();
         populateMonthDropdown();
@@ -913,8 +985,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayInput = document.getElementById('conv-day');
         if (yearInput && dayInput) {
           if (fromCalendar === 'gregorian') { yearInput.value = 2026; dayInput.max = 31; }
-          else if (fromCalendar === 'ethiopian') { yearInput.value = 2018; dayInput.max = 30; }
-          else { yearInput.value = 1447; dayInput.max = 30; }
+          else if (fromCalendar === 'ethiopian') { yearInput.value = 2019; dayInput.max = 30; }
+          else { yearInput.value = 1448; dayInput.max = 30; }
         }
         convertDate();
       });
@@ -972,6 +1044,65 @@ document.addEventListener('DOMContentLoaded', () => {
     endDate.value = nextMonth.toISOString().split('T')[0];
     startDate.addEventListener('change', countDays);
     endDate.addEventListener('change', countDays);
+  }
+
+  // Modal Notes & Reminders Actions
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+  const modalSaveBtn = document.getElementById('modal-save-btn');
+  const modalDeleteBtn = document.getElementById('modal-delete-btn');
+  const modalOverlay = document.getElementById('note-modal');
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeNoteModal);
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeNoteModal();
+    });
+  }
+  if (modalSaveBtn) {
+    modalSaveBtn.addEventListener('click', () => {
+      if (!activeModalJdn) return;
+      const text = (document.getElementById('modal-note-text').value || '').trim();
+      const notes = getStoredNotes();
+      if (text) {
+        notes[activeModalJdn] = text;
+      } else {
+        delete notes[activeModalJdn];
+      }
+      saveStoredNotes(notes);
+      closeNoteModal();
+      renderPrintView();
+    });
+  }
+  if (modalDeleteBtn) {
+    modalDeleteBtn.addEventListener('click', () => {
+      if (!activeModalJdn) return;
+      const notes = getStoredNotes();
+      delete notes[activeModalJdn];
+      saveStoredNotes(notes);
+      closeNoteModal();
+      renderPrintView();
+    });
+  }
+
+  // Desktop / Home Screen Install Prompt
+  let deferredPrompt;
+  const pwaBtn = document.getElementById('pwa-install-btn');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (pwaBtn) pwaBtn.style.display = 'inline-block';
+  });
+  if (pwaBtn) {
+    pwaBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') pwaBtn.style.display = 'none';
+        deferredPrompt = null;
+      } else {
+        alert("To add this calendar to your desktop:\n• On Chrome/Edge: Click the three dots (⋮) > 'Save and share' > 'Install Ethio Calendar' or 'Create shortcut...'\n• On Safari/Mac: Click File > Add to Dock.");
+      }
+    });
   }
 
   populateMonthDropdown();
