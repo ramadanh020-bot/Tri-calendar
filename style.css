@@ -35,9 +35,22 @@ button.secondary:hover { background: #ebf8ff; }
 .toggle-group button { border: none; background: transparent; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #4a5568; }
 .toggle-group button.active { background: #fff; color: #3182ce; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-/* Grid & Vertical Day Cells */
-.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 12px; }
-.month-grid .day-head { text-align: center; font-size: 0.75rem; font-weight: 700; color: #4a5568; padding: 6px 0; text-transform: uppercase; }
+/* Grid & Highlighted Weekday Headers */
+.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 12px; }
+.month-grid .day-head { 
+  text-align: center; 
+  font-size: 0.95rem; 
+  font-weight: 800; 
+  color: #1e293b; 
+  padding: 8px 4px; 
+  text-transform: uppercase; 
+  letter-spacing: 0.05em;
+  background: #f1f5f9;
+  border: 2px solid #94a3b8;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
 .month-grid .day-cell { 
   aspect-ratio: 1 / 1; 
   display: flex; 
@@ -126,7 +139,19 @@ footer a:hover { color: #3182ce; }
   .month-title-main { font-size: 22pt !important; font-weight: 800 !important; color: #111 !important; letter-spacing: -0.5px; }
   .month-title-sub { font-size: 10pt !important; color: #444 !important; margin-top: 4px; line-height: 1.5; }
   .month-grid { gap: 4px !important; border: none; display: grid; grid-template-columns: repeat(7, 1fr); }
-  .month-grid .day-head { font-size: 9pt !important; font-weight: 800 !important; color: #333 !important; padding: 6px 0 !important; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #333; background: transparent !important; }
+  .month-grid .day-head { 
+    font-size: 10pt !important; 
+    font-weight: 900 !important; 
+    color: #111 !important; 
+    padding: 6px 2px !important; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    border: 2px solid #111 !important; 
+    border-radius: 5px !important;
+    background: #f1f5f9 !important; 
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   .month-grid .day-cell { border: 1px solid #999 !important; background: #fff !important; padding: 6px 6px !important; aspect-ratio: 1 / 0.95 !important; }
   .month-grid .day-cell.today { background: #eaf3fb !important; border: 2.5px solid #2c5282 !important; }
   .month-grid .day-cell.holiday { background: #fdf0ee !important; border: 2px solid #c53030 !important; }
