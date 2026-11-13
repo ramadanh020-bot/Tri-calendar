@@ -65,8 +65,17 @@ const cities = [
 
 let uiLang = 'en';
 let priority = 'ethiopian';
+let calendarMode = 'all'; // 'all' | 'eth-greg' | 'eth-hijri' | 'hijri-greg'
 let fromCalendar = 'gregorian';
 let direction = 'to-standard';
+
+// Helper to determine which calendars are active based on calendarMode
+function getActiveCalendars() {
+  if (calendarMode === 'eth-greg') return ['ethiopian', 'gregorian'];
+  if (calendarMode === 'eth-hijri') return ['ethiopian', 'hijri'];
+  if (calendarMode === 'hijri-greg') return ['hijri', 'gregorian'];
+  return ['ethiopian', 'hijri', 'gregorian'];
+}
 
 // ============================================================
 // 2. NUMERALS & LOCALIZATION HELPERS
@@ -214,6 +223,7 @@ function computeOrthodoxEaster(gregYear) {
 }
 
 function getHolidaysForMonth(calendarType, year, month) {
+  const active = getActiveCalendars();
   const holidays = [];
   let startJdn, daysInMonth;
 
@@ -229,37 +239,41 @@ function getHolidaysForMonth(calendarType, year, month) {
   }
   const endJdn = startJdn + daysInMonth - 1;
 
-  const ethYearsInRange = new Set();
-  for (let j = startJdn; j <= endJdn; j++) ethYearsInRange.add(jdnToEthiopian(j).year);
-  ethYearsInRange.forEach(ethYear => {
-    ethiopianHolidays.forEach(h => {
-      const hJdn = ethiopianToJDN(ethYear, h.ethMonth, h.ethDay);
-      if (hJdn >= startJdn && hJdn <= endJdn) {
-        holidays.push({ name: h.name, nameAm: h.nameAm, date: hJdn, type: 'ethiopian' });
-      }
+  if (active.includes('ethiopian')) {
+    const ethYearsInRange = new Set();
+    for (let j = startJdn; j <= endJdn; j++) ethYearsInRange.add(jdnToEthiopian(j).year);
+    ethYearsInRange.forEach(ethYear => {
+      ethiopianHolidays.forEach(h => {
+        const hJdn = ethiopianToJDN(ethYear, h.ethMonth, h.ethDay);
+        if (hJdn >= startJdn && hJdn <= endJdn) {
+          holidays.push({ name: h.name, nameAm: h.nameAm, date: hJdn, type: 'ethiopian' });
+        }
+      });
     });
-  });
 
-  const gregYearsInRange = new Set();
-  for (let j = startJdn; j <= endJdn; j++) gregYearsInRange.add(jdnToGregorian(j).year);
-  gregYearsInRange.forEach(gy => {
-    const easter = computeOrthodoxEaster(gy);
-    const easterJdn = gregorianToJDN(easter.year, easter.month, easter.day);
-    const goodFridayJdn = easterJdn - 2;
-    if (easterJdn >= startJdn && easterJdn <= endJdn) holidays.push({ name: 'Fasika (Easter)', nameAm: 'ፋሲካ', date: easterJdn, type: 'ethiopian' });
-    if (goodFridayJdn >= startJdn && goodFridayJdn <= endJdn) holidays.push({ name: 'Siklet (Good Friday)', nameAm: 'ስቅለት', date: goodFridayJdn, type: 'ethiopian' });
-  });
-
-  const hijriYearsInRange = new Set();
-  for (let j = startJdn; j <= endJdn; j++) hijriYearsInRange.add(jdnToHijri(j).year);
-  hijriYearsInRange.forEach(hy => {
-    hijriHolidays.forEach(h => {
-      const hJdn = hijriToJDN(hy, h.hijriMonth, h.hijriDay);
-      if (hJdn >= startJdn && hJdn <= endJdn) {
-        holidays.push({ name: h.name, nameAr: h.nameAr, date: hJdn, type: 'hijri' });
-      }
+    const gregYearsInRange = new Set();
+    for (let j = startJdn; j <= endJdn; j++) gregYearsInRange.add(jdnToGregorian(j).year);
+    gregYearsInRange.forEach(gy => {
+      const easter = computeOrthodoxEaster(gy);
+      const easterJdn = gregorianToJDN(easter.year, easter.month, easter.day);
+      const goodFridayJdn = easterJdn - 2;
+      if (easterJdn >= startJdn && easterJdn <= endJdn) holidays.push({ name: 'Fasika (Easter)', nameAm: 'ፋሲካ', date: easterJdn, type: 'ethiopian' });
+      if (goodFridayJdn >= startJdn && goodFridayJdn <= endJdn) holidays.push({ name: 'Siklet (Good Friday)', nameAm: 'ስቅለት', date: goodFridayJdn, type: 'ethiopian' });
     });
-  });
+  }
+
+  if (active.includes('hijri')) {
+    const hijriYearsInRange = new Set();
+    for (let j = startJdn; j <= endJdn; j++) hijriYearsInRange.add(jdnToHijri(j).year);
+    hijriYearsInRange.forEach(hy => {
+      hijriHolidays.forEach(h => {
+        const hJdn = hijriToJDN(hy, h.hijriMonth, h.hijriDay);
+        if (hJdn >= startJdn && hJdn <= endJdn) {
+          holidays.push({ name: h.name, nameAr: h.nameAr, date: hJdn, type: 'hijri' });
+        }
+      });
+    });
+  }
 
   const seen = new Set();
   return holidays.filter(h => {
@@ -271,6 +285,7 @@ function getHolidaysForMonth(calendarType, year, month) {
 }
 
 function getCorrespondingMonths(calendarType, year, month) {
+  const active = getActiveCalendars();
   let startJdn, daysInMonth;
   if (calendarType === 'gregorian') {
     startJdn = gregorianToJDN(year, month, 1);
@@ -287,22 +302,25 @@ function getCorrespondingMonths(calendarType, year, month) {
   const firstGreg = jdnToGregorian(startJdn), lastGreg = jdnToGregorian(endJdn);
   const firstEth = jdnToEthiopian(startJdn), lastEth = jdnToEthiopian(endJdn);
   const firstHijri = jdnToHijri(startJdn), lastHijri = jdnToHijri(endJdn);
-  const result = {};
+  const result = { gregorian: null, ethiopian: null, hijri: null };
 
-  if (calendarType === 'gregorian') result.gregorian = null;
-  else if (firstGreg.month === lastGreg.month && firstGreg.year === lastGreg.year) result.gregorian = `${getGregMonthName(firstGreg.month - 1)} ${firstGreg.year}`;
-  else if (firstGreg.year === lastGreg.year) result.gregorian = `${getGregMonthName(firstGreg.month - 1)} – ${getGregMonthName(lastGreg.month - 1)} ${lastGreg.year}`;
-  else result.gregorian = `${getGregMonthName(firstGreg.month - 1)} ${firstGreg.year} – ${getGregMonthName(lastGreg.month - 1)} ${lastGreg.year}`;
+  if (calendarType !== 'gregorian' && active.includes('gregorian')) {
+    if (firstGreg.month === lastGreg.month && firstGreg.year === lastGreg.year) result.gregorian = `${getGregMonthName(firstGreg.month - 1)} ${firstGreg.year}`;
+    else if (firstGreg.year === lastGreg.year) result.gregorian = `${getGregMonthName(firstGreg.month - 1)} – ${getGregMonthName(lastGreg.month - 1)} ${lastGreg.year}`;
+    else result.gregorian = `${getGregMonthName(firstGreg.month - 1)} ${firstGreg.year} – ${getGregMonthName(lastGreg.month - 1)} ${lastGreg.year}`;
+  }
 
-  if (calendarType === 'ethiopian') result.ethiopian = null;
-  else if (firstEth.month === lastEth.month && firstEth.year === lastEth.year) result.ethiopian = `${getEthMonthName(firstEth.month - 1)} ${firstEth.year} E.C.`;
-  else if (firstEth.year === lastEth.year) result.ethiopian = `${getEthMonthName(firstEth.month - 1)} – ${getEthMonthName(lastEth.month - 1)} ${lastEth.year} E.C.`;
-  else result.ethiopian = `${getEthMonthName(firstEth.month - 1)} ${firstEth.year} – ${getEthMonthName(lastEth.month - 1)} ${lastEth.year} E.C.`;
+  if (calendarType !== 'ethiopian' && active.includes('ethiopian')) {
+    if (firstEth.month === lastEth.month && firstEth.year === lastEth.year) result.ethiopian = `${getEthMonthName(firstEth.month - 1)} ${firstEth.year} E.C.`;
+    else if (firstEth.year === lastEth.year) result.ethiopian = `${getEthMonthName(firstEth.month - 1)} – ${getEthMonthName(lastEth.month - 1)} ${lastEth.year} E.C.`;
+    else result.ethiopian = `${getEthMonthName(firstEth.month - 1)} ${firstEth.year} – ${getEthMonthName(lastEth.month - 1)} ${lastEth.year} E.C.`;
+  }
 
-  if (calendarType === 'hijri') result.hijri = null;
-  else if (firstHijri.month === lastHijri.month && firstHijri.year === lastHijri.year) result.hijri = `${getHijriMonthName(firstHijri.month - 1)} ${localizeNumber(firstHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
-  else if (firstHijri.year === lastHijri.year) result.hijri = `${getHijriMonthName(firstHijri.month - 1)} – ${getHijriMonthName(lastHijri.month - 1)} ${localizeNumber(lastHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
-  else result.hijri = `${getHijriMonthName(firstHijri.month - 1)} ${localizeNumber(firstHijri.year, 'hijri')} – ${getHijriMonthName(lastHijri.month - 1)} ${localizeNumber(lastHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
+  if (calendarType !== 'hijri' && active.includes('hijri')) {
+    if (firstHijri.month === lastHijri.month && firstHijri.year === lastHijri.year) result.hijri = `${getHijriMonthName(firstHijri.month - 1)} ${localizeNumber(firstHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
+    else if (firstHijri.year === lastHijri.year) result.hijri = `${getHijriMonthName(firstHijri.month - 1)} – ${getHijriMonthName(lastHijri.month - 1)} ${localizeNumber(lastHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
+    else result.hijri = `${getHijriMonthName(firstHijri.month - 1)} ${localizeNumber(firstHijri.year, 'hijri')} – ${getHijriMonthName(lastHijri.month - 1)} ${localizeNumber(lastHijri.year, 'hijri')}${uiLang === 'ar' ? ' هـ' : ' A.H.'}`;
+  }
 
   return result;
 }
@@ -453,6 +471,26 @@ function convertDate() {
 // ============================================================
 // 7. UI RENDERING: INTERACTIVE ON-SCREEN PRINT VIEW
 // ============================================================
+function syncPriorityWithMode() {
+  const active = getActiveCalendars();
+  if (!active.includes(priority)) {
+    priority = active[0];
+  }
+  const priorityToggle = document.getElementById('priority-toggle');
+  if (priorityToggle) {
+    priorityToggle.querySelectorAll('button').forEach(btn => {
+      const p = btn.dataset.priority;
+      if (active.includes(p)) {
+        btn.style.display = 'inline-block';
+        btn.classList.toggle('active', p === priority);
+      } else {
+        btn.style.display = 'none';
+        btn.classList.remove('active');
+      }
+    });
+  }
+}
+
 function getCurrentPeriodForPriority() {
   const now = new Date(), jdn = gregorianToJDN(now.getFullYear(), now.getMonth() + 1, now.getDate());
   if (priority === 'ethiopian') {
@@ -565,7 +603,7 @@ function renderHolidays(calendarType, year, month) {
 function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
   if (!grid) return;
   grid.innerHTML = '';
-  
+
   const days = weekHeaders[uiLang] || weekHeaders.en;
   days.forEach(d => {
     const el = document.createElement('div');
@@ -596,6 +634,7 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
 
   const holidayJdns = new Set(getHolidaysForMonth(calendarType, year, month).map(h => h.date));
   const notes = getStoredNotes();
+  const active = getActiveCalendars();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const currentJdn = startJdn + (day - 1);
@@ -609,7 +648,7 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
       ethiopian: { label: 'E', num: localizeNumber(eth.day, 'ethiopian') }
     };
 
-    const secondaryKeys = ['ethiopian', 'hijri', 'gregorian'].filter(k => k !== priority);
+    const secondaryKeys = active.filter(k => k !== priority);
 
     const cell = document.createElement('div');
     cell.className = 'day-cell';
@@ -643,13 +682,20 @@ function renderSingleGrid(grid, calendarType, year, month, todayJdn) {
 }
 
 // ============================================================
-// 8. PREMIUM PRINTABLE YEAR PDF / VIEW GENERATOR
+// 8. A5 PRINTABLE YEAR PDF / VIEW GENERATOR
 // ============================================================
 function printWholeYear() {
   const yearSel = document.getElementById('print-year');
   if (!yearSel) return;
   const year = parseInt(yearSel.value);
   const priorityLabel = { ethiopian: 'Ethiopian Calendar', hijri: 'Hijri Calendar', gregorian: 'Gregorian Calendar' }[priority];
+  const modeLabel = {
+    all: 'Tri-Calendar',
+    'eth-greg': 'Ethiopian & Gregorian',
+    'eth-hijri': 'Ethiopian & Hijri',
+    'hijri-greg': 'Hijri & Gregorian'
+  }[calendarMode];
+
   const now = new Date();
   const todayJdn = gregorianToJDN(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
@@ -691,15 +737,14 @@ function printWholeYear() {
       }).join('');
       holidayHtml = `<div class="sheet-holidays"><div class="h-header">Holidays & Observances</div><div class="h-grid">${items}</div></div>`;
     } else {
-      holidayHtml = `<div class="sheet-holidays empty-memo"><div class="h-header">Notes & Plans</div><div class="note-rule-lines"></div></div>`;
+      holidayHtml = `<div class="sheet-holidays empty-memo"><div class="h-header">Notes</div><div class="note-rule-lines"></div></div>`;
     }
 
     html += `
     <section class="cal-sheet">
       <header class="sheet-masthead">
         <div class="meta-left">
-          <span class="brand-pill">Tri-Calendar System</span>
-          <span class="brand-sub">Ethiopian • Hijri • Gregorian</span>
+          <span class="brand-pill">${modeLabel}</span>
         </div>
         <div class="meta-right">
           <span class="sheet-num">${m < 10 ? '0' + m : m} / ${totalMonths}</span>
@@ -716,51 +761,74 @@ function printWholeYear() {
       ${holidayHtml}
 
       <footer class="sheet-foot">
-        <span>Prepared via Ethio Calendar · Print Edition</span>
-        <span>${priorityLabel} Reference</span>
+        <span>Ethio Calendar · A5 Print Edition</span>
+        <span>${priorityLabel}</span>
       </footer>
     </section>`;
   }
 
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Tri-Calendar ${year} — ${priorityLabel}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+  w.document.write(`<!DOCTYPE html><html><head><title>${modeLabel} ${year} — A5 Print</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    @page { size: A4 portrait; margin: 10mm; }
+    @page { size: A5 portrait; margin: 7mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #fff; color: #0f172a; padding: 0; }
-    .cal-sheet { page-break-after: always; height: 277mm; display: flex; flex-direction: column; justify-content: space-between; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #0f172a; padding: 0; }
+    .cal-sheet { page-break-after: always; height: 194mm; display: flex; flex-direction: column; justify-content: space-between; }
     .cal-sheet:last-child { page-break-after: auto; }
-    .sheet-masthead { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #0f172a; padding-bottom: 5px; margin-bottom: 12px; }
-    .brand-pill { font-size: 7.5pt; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #0f172a; margin-right: 8px; }
-    .brand-sub { font-size: 7.5pt; font-weight: 500; color: #64748b; }
-    .sheet-num { font-size: 8pt; font-weight: 700; color: #0f172a; }
-    .sheet-title-banner { text-align: center; margin-bottom: 14px; }
-    .title-primary { font-family: 'Cinzel', 'Noto Sans Ethiopic', 'Amiri', serif; font-size: 21pt; font-weight: 800; color: #0f172a; }
-    .title-sub { font-size: 8.5pt; color: #475569; margin-top: 4px; display: flex; justify-content: center; gap: 8px; }
-    .sheet-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1.5px solid #0f172a; border-left: 1px solid #cbd5e1; flex-grow: 1; }
-    .day-head { font-size: 8pt; font-weight: 800; text-align: center; padding: 6px 0; text-transform: uppercase; color: #0f172a; background: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1.5px solid #0f172a; }
-    .day-cell { border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 6px 8px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; background: #fff; min-height: 28mm; }
-    .day-cell.empty { background: #fafafa; }
-    .day-cell.today { background: #eaf3fb; }
-    .day-cell.holiday { background: #fdf0ee; }
-    .cell-primary-date { font-size: 14pt; font-weight: 900; color: #0f172a; margin-bottom: 4px; line-height: 1; }
+    .sheet-masthead { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #0f172a; padding-bottom: 3px; margin-bottom: 6px; }
+    .brand-pill { font-size: 6.5pt; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #0f172a; }
+    .sheet-num { font-size: 7pt; font-weight: 700; color: #0f172a; }
+    .sheet-title-banner { text-align: center; margin-bottom: 8px; }
+    .title-primary { font-size: 16pt; font-weight: 900; color: #0f172a; line-height: 1.1; }
+    .title-sub { font-size: 7pt; color: #475569; margin-top: 2px; display: flex; justify-content: center; gap: 6px; }
+    .sheet-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; flex-grow: 1; }
+    .day-head { 
+      font-size: 8.5pt; 
+      font-weight: 900; 
+      text-align: center; 
+      padding: 4px 2px; 
+      text-transform: uppercase; 
+      color: #0f172a; 
+      background: #f1f5f9; 
+      border: 1.5px solid #0f172a; 
+      border-radius: 4px; 
+      margin-bottom: 2px;
+    }
+    .day-cell { 
+      border: 1px solid #cbd5e1; 
+      border-radius: 3px;
+      padding: 3px 4px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: flex-start; 
+      justify-content: flex-start; 
+      background: #fff; 
+      min-height: 19mm; 
+    }
+    .day-cell.empty { background: #fafafa; border-color: #f1f5f9; }
+    .day-cell.today { background: #eaf3fb; border: 1.5px solid #2c5282; }
+    .day-cell.holiday { background: #fdf0ee; border: 1.5px solid #c53030; }
+    .cell-primary-date { font-size: 11pt; font-weight: 900; color: #0f172a; margin-bottom: 2px; line-height: 1; }
     .holiday .cell-primary-date { color: #b91c1c; }
-    .secondary-dates-vertical { display: flex; flex-direction: column; gap: 2px; font-size: 7.5pt; color: #475569; }
-    .sec-date-row { display: flex; align-items: baseline; gap: 4px; }
-    .sec-date-row .prefix { font-size: 6pt; font-weight: 800; color: #94a3b8; }
+    .secondary-dates-vertical { display: flex; flex-direction: column; gap: 1px; font-size: 6pt; color: #475569; line-height: 1.1; }
+    .sec-date-row { display: flex; align-items: baseline; gap: 2px; }
+    .sec-date-row .prefix { font-size: 5pt; font-weight: 800; color: #94a3b8; }
     .sec-date-row .val { font-weight: 600; }
-    .sheet-holidays { border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 10px; margin-top: 10px; background: #fafbfc; }
-    .h-header { font-size: 7pt; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 5px; border-bottom: 1px solid #e2e8f0; }
-    .h-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px 14px; }
-    .h-item { display: flex; font-size: 7.5pt; color: #1e293b; gap: 6px; }
-    .h-date { font-weight: 700; color: #0f172a; min-width: 65px; }
-    .h-name { flex: 1; }
-    .h-tag { font-size: 5.5pt; font-weight: 800; padding: 1px 3px; background: #e2e8f0; }
-    .note-rule-lines { height: 14mm; background-image: repeating-linear-gradient(transparent, transparent 6mm, #e2e8f0 6.5mm); }
-    .sheet-foot { display: flex; justify-content: space-between; margin-top: 8px; border-top: 1px solid #e2e8f0; font-size: 7pt; color: #94a3b8; }
+    .sheet-holidays { border: 1px solid #e2e8f0; border-radius: 3px; padding: 4px 6px; margin-top: 6px; background: #fafbfc; }
+    .h-header { font-size: 6pt; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 3px; border-bottom: 1px solid #e2e8f0; }
+    .h-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px 8px; }
+    .h-item { display: flex; font-size: 6pt; color: #1e293b; gap: 4px; }
+    .h-date { font-weight: 700; color: #0f172a; min-width: 48px; }
+    .h-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .h-tag { font-size: 4.5pt; font-weight: 800; padding: 1px 2px; background: #e2e8f0; }
+    .note-rule-lines { height: 9mm; background-image: repeating-linear-gradient(transparent, transparent 4mm, #e2e8f0 4.5mm); }
+    .sheet-foot { display: flex; justify-content: space-between; margin-top: 5px; border-top: 1px solid #e2e8f0; font-size: 6pt; color: #94a3b8; padding-top: 2px; }
     .ethiopic-text { font-family: 'Noto Sans Ethiopic', sans-serif; }
     [dir="rtl"] { direction: rtl; font-family: 'Amiri', serif; }
+    @media print {
+      .day-head, .day-cell, .sheet-holidays { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
   </style></head><body>${html}</body></html>`);
   w.document.close();
 
@@ -807,6 +875,7 @@ function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
   }
 
   const holidayJdns = new Set(getHolidaysForMonth(calendarType, year, month).map(h => h.date));
+  const active = getActiveCalendars();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const currentJdn = startJdn + (day - 1);
@@ -820,7 +889,7 @@ function renderGridInWindow(win, gridId, calendarType, year, month, todayJdn) {
       ethiopian: { label: 'E', num: localizeNumber(eth.day, 'ethiopian') }
     };
 
-    const secondaryKeys = ['ethiopian', 'hijri', 'gregorian'].filter(k => k !== priority);
+    const secondaryKeys = active.filter(k => k !== priority);
 
     const cell = win.document.createElement('div');
     cell.className = 'day-cell';
@@ -993,6 +1062,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Dual / Tri Calendar Mode Toggle
+  const modeToggle = document.getElementById('mode-toggle');
+  if (modeToggle) {
+    modeToggle.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        modeToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        calendarMode = this.dataset.mode;
+        syncPriorityWithMode();
+        populatePrintYearDropdown();
+        populatePrintMonthDropdown();
+        renderPrintView();
+      });
+    });
+  }
+
   const priorityToggle = document.getElementById('priority-toggle');
   if (priorityToggle) {
     priorityToggle.querySelectorAll('button').forEach(btn => {
@@ -1112,6 +1197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   countDays();
 
   if (document.getElementById('print-year')) {
+    syncPriorityWithMode();
     populatePrintYearDropdown();
     populatePrintMonthDropdown();
     renderPrintView();
